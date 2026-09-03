@@ -13,6 +13,8 @@ Um sistema de organização financeira pessoal baseado em automação e psicolog
 - [`calculadora/liberdade-financeira.html`](calculadora/liberdade-financeira.html) — calculadora interativa: informe renda, despesas, poupança atual e perfil de risco, e veja as 4 etapas com valores e datas estimadas.
 - [`docs/portfolio-passivo-bogleheads.md`](docs/portfolio-passivo-bogleheads.md) — construção de carteira passiva estilo Bogleheads: alocação ações/renda fixa por idade, risco e horizonte, com exemplos de fundos por país.
 - [`calculadora/portfolio.html`](calculadora/portfolio.html) — calculadora interativa: informe idade, país, horizonte, risco e aporte mensal, e veja a alocação-alvo e os fundos sugeridos.
+- [`docs/ritual-revisao-financeira-mensal.md`](docs/ritual-revisao-financeira-mensal.md) — roteiro cronometrado de 20 minutos para a revisão financeira mensal, com as perguntas exatas de cada bloco.
+- [`calculadora/revisao-mensal.html`](calculadora/revisao-mensal.html) — formulário interativo do ritual: calcula patrimônio líquido e taxa de poupança, guarda o histórico mês a mês no seu navegador e mostra a tendência.
 
 ## A ideia em uma frase
 

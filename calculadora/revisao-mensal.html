@@ -1,0 +1,333 @@
+<title>Ritual Mensal de Revisão Financeira</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,560;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#f5f3ea; --surface:#fffdf6; --ink:#1c2a23; --ink-soft:#5a6a62; --line:#ddd5be; --focus:#3f6b53;
+    --moss:#2f5b45; --moss-bg:#e3ebe3;
+    --sky:#2f6579;  --sky-bg:#e1ebee;
+    --rose:#9c4a41; --rose-bg:#f2e2de;
+    --gold:#a8741f; --gold-bg:#f4e7c9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+      --moss:#7cbf9c; --moss-bg:#20362b;
+      --sky:#7cb7cc;  --sky-bg:#1c3038;
+      --rose:#e2a49a; --rose-bg:#3a2622;
+      --gold:#e3b45c; --gold-bg:#3a2f15;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+    --moss:#7cbf9c; --moss-bg:#20362b;
+    --sky:#7cb7cc;  --sky-bg:#1c3038;
+    --rose:#e2a49a; --rose-bg:#3a2622;
+    --gold:#e3b45c; --gold-bg:#3a2f15;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Work Sans",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--gold-bg); }
+  .wrap{ max-width:900px; margin:0 auto; padding:56px 24px 96px; }
+  h1,h2,h3{ font-family:"Fraunces",Georgia,serif; font-weight:650; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",monospace; font-variant-numeric:tabular-nums; }
+
+  header.hero{ border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:36px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--sky); font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--sky); display:inline-block; }
+  h1{ font-size:clamp(28px,4.2vw,40px); line-height:1.12; letter-spacing:-.01em; }
+  .lede{ font-size:16px; line-height:1.6; color:var(--ink-soft); max-width:62ch; margin-top:14px; }
+
+  /* timeline strip */
+  .timeline{ display:flex; margin-top:26px; border:1px solid var(--line); border-radius:4px; overflow:hidden; }
+  .tl-step{ flex:1; padding:12px 14px; border-right:1px solid var(--line); background:var(--surface); }
+  .tl-step:last-child{ border-right:none; }
+  .tl-time{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-soft); }
+  .tl-label{ font-size:12.5px; font-weight:600; margin-top:2px; }
+  @media (max-width:760px){ .timeline{ flex-direction:column; } .tl-step{ border-right:none; border-bottom:1px solid var(--line); } .tl-step:last-child{ border-bottom:none; } }
+
+  section{ margin-top:44px; }
+  .block-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:18px; }
+  .block-n{ font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-soft); }
+  .block-head h2{ font-size:20px; }
+  .block-time{ font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--ink-soft); margin-left:auto; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px 24px; }
+
+  .field-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  @media (max-width:700px){ .field-grid{ grid-template-columns:1fr 1fr; } }
+  .field label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:6px; }
+  .input-shell{ display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink); padding-bottom:4px; }
+  .input-shell span{ font-family:"IBM Plex Mono",monospace; font-size:14px; color:var(--ink-soft); }
+  .field input[type="text"]{ font-family:"IBM Plex Mono",monospace; font-size:16px; font-weight:600; color:var(--ink); background:transparent; border:none; outline:none; width:100%; padding:0; }
+
+  .stat-row{ display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid var(--line); margin-top:18px; padding-top:14px; }
+  .stat-amt{ font-size:26px; font-weight:600; }
+  .stat-delta{ font-size:13px; font-family:"IBM Plex Mono",monospace; }
+  .stat-delta.up{ color:var(--moss); } .stat-delta.down{ color:var(--rose); } .stat-delta.flat{ color:var(--ink-soft); }
+
+  .bar-track{ height:8px; border-radius:4px; background:var(--line); overflow:hidden; margin-top:14px; }
+  .bar-fill{ height:100%; border-radius:4px; }
+  .bar-label{ display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-top:6px; }
+
+  .qa{ display:flex; flex-direction:column; gap:16px; }
+  .qa-item label{ display:block; font-size:14px; font-weight:500; margin-bottom:8px; line-height:1.45; }
+  textarea, input[type="text"].line{
+    width:100%; font-family:"Work Sans",sans-serif; font-size:14px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:3px; padding:10px 12px; resize:vertical; outline:none;
+  }
+  textarea:focus, input.line:focus{ border-color:var(--focus); }
+  textarea{ min-height:64px; }
+
+  .adjust-row{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .adjust-n{ width:24px; height:24px; border-radius:50%; background:var(--rose-bg); color:var(--rose); font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  .save-row{ display:flex; align-items:center; gap:16px; margin-top:36px; flex-wrap:wrap; }
+  .save-btn{ font-family:"Work Sans",sans-serif; font-size:14px; font-weight:600; color:var(--paper); background:var(--moss); border:none; border-radius:3px; padding:11px 22px; cursor:pointer; }
+  .save-btn:hover{ opacity:.9; }
+  .save-status{ font-size:12.5px; color:var(--ink-soft); }
+
+  .history{ border:1px solid var(--line); border-radius:4px; background:var(--surface); overflow:hidden; }
+  .hist-grid{ display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; }
+  .hist-head > div, .hist-row > div{ padding:10px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; }
+  .hist-head > div{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); }
+  .hist-row:last-child > div{ border-bottom:none; }
+  .hist-row .mono{ font-size:13px; }
+  .hist-empty{ padding:16px; font-size:13px; color:var(--ink-soft); }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Ritual mensal de revisão financeira</div>
+    <h1>20 minutos, sempre na mesma ordem — o suficiente para ter direção, curto o bastante para não pular.</h1>
+    <p class="lede">Cinco blocos cronometrados: patrimônio, taxa de poupança, comportamento, conquistas e 3 ajustes. Preencha, salve — o histórico fica só no seu navegador, mês a mês.</p>
+
+    <div class="timeline">
+      <div class="tl-step"><div class="tl-time">0–5 min</div><div class="tl-label" style="color:var(--moss)">Patrimônio líquido</div></div>
+      <div class="tl-step"><div class="tl-time">5–9 min</div><div class="tl-label" style="color:var(--gold)">Taxa de poupança</div></div>
+      <div class="tl-step"><div class="tl-time">9–14 min</div><div class="tl-label" style="color:var(--sky)">Comportamento</div></div>
+      <div class="tl-step"><div class="tl-time">14–17 min</div><div class="tl-label">Conquistas</div></div>
+      <div class="tl-step"><div class="tl-time">17–20 min</div><div class="tl-label" style="color:var(--rose)">3 ajustes</div></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="block-head"><span class="block-n mono">01</span><h2 style="color:var(--moss)">Patrimônio líquido</h2><span class="block-time">0–5 min</span></div>
+    <div class="card">
+      <div class="field-grid">
+        <div class="field"><label for="ativoConta">Conta + poupança</label><div class="input-shell"><span>R$</span><input type="text" id="ativoConta" inputmode="decimal" value="6.000,00"></div></div>
+        <div class="field"><label for="ativoInvest">Investimentos</label><div class="input-shell"><span>R$</span><input type="text" id="ativoInvest" inputmode="decimal" value="22.000,00"></div></div>
+        <div class="field"><label for="ativoOutros">Outros ativos</label><div class="input-shell"><span>R$</span><input type="text" id="ativoOutros" inputmode="decimal" value="0,00"></div></div>
+        <div class="field"><label for="passCartao">Cartão de crédito</label><div class="input-shell"><span>R$</span><input type="text" id="passCartao" inputmode="decimal" value="1.200,00"></div></div>
+        <div class="field"><label for="passEmprestimo">Empréstimos / financiamentos</label><div class="input-shell"><span>R$</span><input type="text" id="passEmprestimo" inputmode="decimal" value="3.000,00"></div></div>
+        <div class="field"><label for="passOutros">Outras dívidas</label><div class="input-shell"><span>R$</span><input type="text" id="passOutros" inputmode="decimal" value="0,00"></div></div>
+      </div>
+      <div class="stat-row">
+        <div><div style="font-size:12px;color:var(--ink-soft)">patrimônio líquido</div><div class="stat-amt mono" id="patrimonioAmt" style="color:var(--moss)"></div></div>
+        <div class="stat-delta" id="patrimonioDelta"></div>
+      </div>
+      <div class="qa" style="margin-top:18px;">
+        <div class="qa-item"><label>Meu patrimônio líquido subiu, caiu ou ficou igual em relação ao mês passado? Por quê, especificamente?</label><textarea id="q1"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="block-head"><span class="block-n mono">02</span><h2 style="color:var(--gold)">Taxa de poupança</h2><span class="block-time">5–9 min</span></div>
+    <div class="card">
+      <div class="field-grid">
+        <div class="field"><label for="renda">Renda líquida do mês</label><div class="input-shell"><span>R$</span><input type="text" id="renda" inputmode="decimal" value="8.000,00"></div></div>
+        <div class="field"><label for="poupado">Poupado + investido no mês</label><div class="input-shell"><span>R$</span><input type="text" id="poupado" inputmode="decimal" value="1.600,00"></div></div>
+        <div class="field"><label for="meta">Sua meta de taxa de poupança</label><div class="input-shell"><input type="text" id="meta" inputmode="decimal" value="20"><span>%</span></div></div>
+      </div>
+      <div class="stat-row">
+        <div><div style="font-size:12px;color:var(--ink-soft)">taxa de poupança deste mês</div><div class="stat-amt mono" id="taxaAmt" style="color:var(--gold)"></div></div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="taxaBar" style="background:var(--gold)"></div></div>
+      <div class="bar-label"><span>0%</span><span id="metaLabel"></span></div>
+      <div class="qa" style="margin-top:18px;">
+        <div class="qa-item"><label>Se a taxa caiu: foi um gasto pontual e explicável, ou um padrão que está voltando?</label><textarea id="q2"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="block-head"><span class="block-n mono">03</span><h2 style="color:var(--sky)">Comportamento financeiro</h2><span class="block-time">9–14 min</span></div>
+    <div class="card qa">
+      <div class="qa-item"><label>Teve algum gasto por impulso ou emocional este mês? O que disparou?</label><textarea id="q3"></textarea></div>
+      <div class="qa-item"><label>Alguma automação (pague-se primeiro, fundo sem culpa, contas fixas) falhou ou precisou de intervenção manual?</label><textarea id="q4"></textarea></div>
+      <div class="qa-item"><label>Em que momento me senti mais ansioso(a) ou culpado(a) com dinheiro este mês — e o que isso revela?</label><textarea id="q5"></textarea></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="block-head"><span class="block-n mono">04</span><h2>Conquistas e aprendizados</h2><span class="block-time">14–17 min</span></div>
+    <div class="card qa">
+      <div class="qa-item"><label>Qual foi a melhor decisão financeira que tomei este mês, mesmo que pequena?</label><textarea id="q6"></textarea></div>
+      <div class="qa-item"><label>O que eu faria diferente se pudesse voltar ao início do mês?</label><textarea id="q7"></textarea></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="block-head"><span class="block-n mono">05</span><h2 style="color:var(--rose)">3 ajustes para o próximo mês</h2><span class="block-time">17–20 min</span></div>
+    <div class="card">
+      <div class="adjust-row"><span class="adjust-n">1</span><input type="text" class="line" id="ajuste1" placeholder="O ajuste que sozinho teria mais impacto"></div>
+      <div class="adjust-row"><span class="adjust-n">2</span><input type="text" class="line" id="ajuste2" placeholder="Segundo ajuste"></div>
+      <div class="adjust-row"><span class="adjust-n">3</span><input type="text" class="line" id="ajuste3" placeholder="Terceiro ajuste"></div>
+    </div>
+
+    <div class="save-row">
+      <button class="save-btn" id="saveBtn">Salvar revisão deste mês</button>
+      <span class="save-status" id="saveStatus"></span>
+    </div>
+  </section>
+
+  <section>
+    <div class="block-head"><h2 style="font-size:19px;">Histórico</h2></div>
+    <div class="history">
+      <div class="hist-grid">
+        <div class="hist-head"><div>Mês</div><div>Patrimônio</div><div>Variação</div><div>Taxa de poupança</div></div>
+        <div id="histRows"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    O histórico é salvo apenas no armazenamento local deste navegador — não sai daqui, e some se você limpar os dados do site. Perguntas e estrutura completas em <span class="mono">docs/ritual-revisao-financeira-mensal.md</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+  var STORAGE_KEY = 'finan_revisao_mensal_v1';
+
+  function parseNum(str){
+    var n = parseFloat(String(str).replace(/\./g,'').replace(',', '.'));
+    return isNaN(n) ? 0 : n;
+  }
+
+  function monthKey(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+  function monthLabel(key){
+    var parts = key.split('-');
+    var d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, 1);
+    return d.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+  }
+
+  function loadAll(){
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function saveAll(data){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+  }
+
+  var ids = ['ativoConta','ativoInvest','ativoOutros','passCartao','passEmprestimo','passOutros','renda','poupado','meta','q1','q2','q3','q4','q5','q6','q7','ajuste1','ajuste2','ajuste3'];
+  var els = {}; ids.forEach(function(id){ els[id] = document.getElementById(id); });
+
+  function calcPatrimonio(){
+    var ativos = parseNum(els.ativoConta.value) + parseNum(els.ativoInvest.value) + parseNum(els.ativoOutros.value);
+    var passivos = parseNum(els.passCartao.value) + parseNum(els.passEmprestimo.value) + parseNum(els.passOutros.value);
+    return ativos - passivos;
+  }
+
+  function previousEntry(all, currentKey){
+    var keys = Object.keys(all).filter(function(k){ return k < currentKey; }).sort();
+    return keys.length ? all[keys[keys.length-1]] : null;
+  }
+
+  function update(){
+    var patrimonio = calcPatrimonio();
+    document.getElementById('patrimonioAmt').textContent = BRL.format(patrimonio);
+
+    var all = loadAll();
+    var curKey = monthKey(new Date());
+    var prev = previousEntry(all, curKey);
+    var deltaEl = document.getElementById('patrimonioDelta');
+    if (prev){
+      var delta = patrimonio - prev.patrimonio;
+      var pct = prev.patrimonio !== 0 ? (delta/Math.abs(prev.patrimonio))*100 : 0;
+      var cls = delta > 0.5 ? 'up' : (delta < -0.5 ? 'down' : 'flat');
+      var sign = delta > 0 ? '+' : '';
+      deltaEl.className = 'stat-delta ' + cls;
+      deltaEl.textContent = sign + BRL.format(delta) + ' (' + sign + pct.toFixed(1) + '%) vs mês anterior';
+    } else {
+      deltaEl.className = 'stat-delta flat';
+      deltaEl.textContent = 'sem mês anterior salvo ainda';
+    }
+
+    var renda = parseNum(els.renda.value);
+    var poupado = parseNum(els.poupado.value);
+    var meta = parseNum(els.meta.value);
+    var taxa = renda > 0 ? (poupado/renda)*100 : 0;
+    document.getElementById('taxaAmt').textContent = taxa.toFixed(1) + '%';
+    document.getElementById('taxaBar').style.width = Math.min(100, (taxa/Math.max(meta,1))*100) + '%';
+    document.getElementById('metaLabel').textContent = 'meta: ' + meta.toFixed(0) + '%';
+
+    renderHistory(all, curKey);
+  }
+
+  function renderHistory(all, curKey){
+    var keys = Object.keys(all).sort().reverse();
+    var el = document.getElementById('histRows');
+    if (!keys.length){ el.innerHTML = '<div class="hist-empty">nenhuma revisão salva ainda — salve a deste mês para começar o histórico.</div>'; return; }
+    var sortedAsc = keys.slice().sort();
+    el.innerHTML = keys.map(function(k){
+      var entry = all[k];
+      var idx = sortedAsc.indexOf(k);
+      var prevEntry = idx > 0 ? all[sortedAsc[idx-1]] : null;
+      var deltaTxt = '—';
+      if (prevEntry){
+        var d = entry.patrimonio - prevEntry.patrimonio;
+        deltaTxt = (d>0?'+':'') + BRL.format(d);
+      }
+      return '<div class="hist-row">' +
+        '<div>' + monthLabel(k) + (k===curKey?' (atual)':'') + '</div>' +
+        '<div class="mono">' + BRL.format(entry.patrimonio) + '</div>' +
+        '<div class="mono">' + deltaTxt + '</div>' +
+        '<div class="mono">' + entry.taxa.toFixed(1) + '%</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', function(){
+    var all = loadAll();
+    var curKey = monthKey(new Date());
+    all[curKey] = {
+      patrimonio: calcPatrimonio(),
+      taxa: parseNum(els.renda.value) > 0 ? (parseNum(els.poupado.value)/parseNum(els.renda.value))*100 : 0,
+      respostas: { q1:els.q1.value, q2:els.q2.value, q3:els.q3.value, q4:els.q4.value, q5:els.q5.value, q6:els.q6.value, q7:els.q7.value },
+      ajustes: [els.ajuste1.value, els.ajuste2.value, els.ajuste3.value]
+    };
+    saveAll(all);
+    document.getElementById('saveStatus').textContent = 'salvo — revisão de ' + monthLabel(curKey) + ' registrada.';
+    update();
+  });
+
+  (function loadCurrentMonthIfExists(){
+    var all = loadAll();
+    var curKey = monthKey(new Date());
+    if (all[curKey] && all[curKey].respostas){
+      var r = all[curKey].respostas;
+      ['q1','q2','q3','q4','q5','q6','q7'].forEach(function(k){ if (r[k]) els[k].value = r[k]; });
+      var aj = all[curKey].ajustes || [];
+      if (aj[0]) els.ajuste1.value = aj[0];
+      if (aj[1]) els.ajuste2.value = aj[1];
+      if (aj[2]) els.ajuste3.value = aj[2];
+    }
+  })();
+
+  ids.forEach(function(id){ els[id].addEventListener('input', update); });
+  update();
+})();
+</script>
