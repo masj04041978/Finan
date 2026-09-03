@@ -1,0 +1,285 @@
+<title>Fundo de Emergência & Liberdade Financeira</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,560;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#f5f3ea; --surface:#fffdf6; --ink:#1c2a23; --ink-soft:#5a6a62; --line:#ddd5be; --focus:#3f6b53;
+    --moss:#2f5b45; --moss-bg:#e3ebe3;
+    --sky:#2f6579;  --sky-bg:#e1ebee;
+    --rose:#9c4a41; --rose-bg:#f2e2de;
+    --gold:#a8741f; --gold-bg:#f4e7c9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+      --moss:#7cbf9c; --moss-bg:#20362b;
+      --sky:#7cb7cc;  --sky-bg:#1c3038;
+      --rose:#e2a49a; --rose-bg:#3a2622;
+      --gold:#e3b45c; --gold-bg:#3a2f15;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+    --moss:#7cbf9c; --moss-bg:#20362b;
+    --sky:#7cb7cc;  --sky-bg:#1c3038;
+    --rose:#e2a49a; --rose-bg:#3a2622;
+    --gold:#e3b45c; --gold-bg:#3a2f15;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Work Sans",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--gold-bg); }
+  .wrap{ max-width:960px; margin:0 auto; padding:56px 24px 96px; }
+  h1,h2,h3{ font-family:"Fraunces",Georgia,serif; font-weight:650; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",monospace; font-variant-numeric:tabular-nums; }
+
+  header.hero{ border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:40px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--gold); display:inline-block; }
+  h1{ font-size:clamp(28px,4.2vw,42px); line-height:1.1; letter-spacing:-.01em; }
+  .lede{ font-size:16px; line-height:1.6; color:var(--ink-soft); max-width:62ch; margin-top:14px; }
+
+  section{ margin-top:48px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .section-head h2{ font-size:21px; }
+  .section-note{ font-size:13px; color:var(--ink-soft); max-width:38ch; text-align:right; }
+
+  /* inputs */
+  .inputs-card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px 24px; }
+  .field-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  @media (max-width:700px){ .field-grid{ grid-template-columns:1fr 1fr; } }
+  .field label{ display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px; }
+  .input-shell{ display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink); padding-bottom:4px; }
+  .input-shell span{ font-family:"IBM Plex Mono",monospace; font-size:15px; color:var(--ink-soft); }
+  .field input[type="text"]{ font-family:"IBM Plex Mono",monospace; font-size:19px; font-weight:600; color:var(--ink); background:transparent; border:none; outline:none; width:100%; padding:0; }
+  select{
+    font-family:"Work Sans",sans-serif; font-size:14.5px; color:var(--ink); background:var(--surface);
+    border:1px solid var(--line); border-radius:3px; padding:9px 10px; width:100%;
+  }
+  .toggles{ display:flex; gap:22px; margin-top:20px; flex-wrap:wrap; }
+  .toggle{ display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--ink-soft); cursor:pointer; }
+  .toggle input{ width:16px; height:16px; accent-color:var(--gold); }
+
+  .warn{ margin-top:16px; background:var(--rose-bg); border:1px solid color-mix(in srgb, var(--rose) 35%, transparent); color:var(--rose); border-radius:3px; padding:10px 14px; font-size:13px; display:none; }
+  .warn.show{ display:block; }
+
+  /* result cards */
+  .results{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:700px){ .results{ grid-template-columns:1fr; } }
+  .rcard{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px; display:flex; flex-direction:column; gap:12px; }
+  .rcard-title{ font-family:"Fraunces",serif; font-size:18px; font-weight:650; }
+  .rcard-sub{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+  .rcard-amt{ font-size:28px; font-weight:600; }
+  .bar-track{ height:8px; border-radius:4px; background:var(--line); overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:4px; }
+  .bar-label{ display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); }
+  .rate-toggle{ display:flex; gap:6px; }
+  .rate-btn{
+    flex:1; text-align:center; padding:7px 0; border:1px solid var(--line); border-radius:3px; cursor:pointer;
+    font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-soft); background:transparent;
+  }
+  .rate-btn.active{ background:var(--gold-bg); color:var(--gold); border-color:var(--gold); font-weight:600; }
+  .rcard .stat-row{ display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:9px; font-size:13px; }
+  .rcard .stat-label{ color:var(--ink-soft); }
+  .rcard .stat-val{ font-weight:600; }
+
+  /* stages */
+  ol.stages{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
+  ol.stages li{ display:grid; grid-template-columns:30px 1fr auto auto; gap:16px; align-items:baseline; padding:15px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:700px){ ol.stages li{ grid-template-columns:24px 1fr; } ol.stages li .stage-amt, ol.stages li .stage-date{ grid-column:2; } }
+  .stage-n{ font-family:"IBM Plex Mono",monospace; color:var(--ink-soft); font-size:13px; }
+  .stage-txt b{ display:block; font-size:14.5px; font-weight:600; }
+  .stage-txt span{ font-size:12.5px; color:var(--ink-soft); }
+  .stage-amt{ font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:600; text-align:right; }
+  .stage-date{ font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--ink-soft); text-align:right; white-space:nowrap; }
+  .stage-done{ font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; padding:2px 7px; border-radius:20px; background:var(--moss-bg); color:var(--moss); font-weight:600; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Fundo de emergência &amp; liberdade financeira</div>
+    <h1>Primeiro a segurança, depois a liberdade — nessa ordem, com premissas conservadoras.</h1>
+    <p class="lede">A reserva não é um "3 a 6 meses" genérico: é calculada pelo seu nível de risco real. O número de liberdade financeira usa uma taxa de retirada conservadora, não a regra dos 4% sem ajuste. Edite com os seus dados abaixo.</p>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <h2>Sua situação</h2>
+      <span class="section-note">valores de exemplo — edite com os seus</span>
+    </div>
+    <div class="inputs-card">
+      <div class="field-grid">
+        <div class="field">
+          <label for="renda">Renda mensal líquida</label>
+          <div class="input-shell"><span>R$</span><input type="text" id="renda" inputmode="decimal" value="8.000,00"></div>
+        </div>
+        <div class="field">
+          <label for="despesas">Despesas mensais</label>
+          <div class="input-shell"><span>R$</span><input type="text" id="despesas" inputmode="decimal" value="5.500,00"></div>
+        </div>
+        <div class="field">
+          <label for="poupanca">Poupança atual (líquida)</label>
+          <div class="input-shell"><span>R$</span><input type="text" id="poupanca" inputmode="decimal" value="4.000,00"></div>
+        </div>
+        <div class="field">
+          <label for="risco">Nível de risco / perfil</label>
+          <select id="risco">
+            <option value="6">Conservador (renda estável, CLT)</option>
+            <option value="9" selected>Moderado</option>
+            <option value="12">Agressivo (mais tolerância a incerteza)</option>
+          </select>
+        </div>
+      </div>
+      <div class="toggles">
+        <label class="toggle"><input type="checkbox" id="autonomo"> Renda variável, comissionada ou autônoma (+3 meses de reserva)</label>
+        <label class="toggle"><input type="checkbox" id="dependentes" checked> Tenho dependentes financeiros (+2 meses de reserva)</label>
+      </div>
+      <div class="warn" id="warn">Despesas iguais ou maiores que a renda: não há capacidade de poupança mensal. Ajuste os valores para ver prazos.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>As duas metas</h2></div>
+    <div class="results">
+      <div class="rcard">
+        <div class="rcard-title" style="color:var(--sky)">Fundo de emergência</div>
+        <div class="rcard-sub" id="reservaMeses"></div>
+        <div class="rcard-amt mono" id="reservaAlvo"></div>
+        <div class="bar-label"><span>poupança atual</span><span id="reservaPct"></span></div>
+        <div class="bar-track"><div class="bar-fill" id="reservaBar" style="background:var(--sky)"></div></div>
+        <div class="stat-row"><span class="stat-label">completa em</span><span class="stat-val mono" id="reservaData"></span></div>
+      </div>
+
+      <div class="rcard">
+        <div class="rcard-title" style="color:var(--gold)">Número de liberdade financeira</div>
+        <div class="rcard-sub">Patrimônio investido cujos rendimentos cobrem suas despesas anuais, à taxa de retirada segura escolhida.</div>
+        <div class="rate-toggle" id="rateToggle">
+          <button class="rate-btn" data-rate="0.04">4,0%</button>
+          <button class="rate-btn" data-rate="0.035">3,5%</button>
+          <button class="rate-btn" data-rate="0.03">3,0%</button>
+        </div>
+        <div class="rcard-amt mono" id="fiAlvo" style="color:var(--gold)"></div>
+        <div class="stat-row"><span class="stat-label">atingido em</span><span class="stat-val mono" id="fiData"></span></div>
+        <div class="stat-row"><span class="stat-label">retorno real assumido</span><span class="stat-val mono">4,0% a.a.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Plano por etapas</h2>
+      <div class="section-note">Cada etapa só começa quando a anterior termina.</div>
+    </div>
+    <ol class="stages" id="stages"></ol>
+  </section>
+
+  <footer>
+    Meses de reserva = base do perfil de risco + ajustes (renda variável/autônoma, dependentes). Número de liberdade financeira = despesa anual ÷ taxa de retirada segura. Prazos assumem retorno real de 4% a.a. após a reserva completa e capacidade de poupança constante (renda − despesas). Metodologia completa em <span class="mono">docs/fundo-emergencia-liberdade-financeira.md</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+  var rendaEl = document.getElementById('renda');
+  var despesasEl = document.getElementById('despesas');
+  var poupancaEl = document.getElementById('poupanca');
+  var riscoEl = document.getElementById('risco');
+  var autonomoEl = document.getElementById('autonomo');
+  var dependentesEl = document.getElementById('dependentes');
+  var warnEl = document.getElementById('warn');
+  var rateToggle = document.getElementById('rateToggle');
+  var stagesEl = document.getElementById('stages');
+
+  var taxaRetirada = 0.035;
+  var RETORNO_REAL_ANUAL = 0.04;
+
+  function parseNum(str){
+    var n = parseFloat(String(str).replace(/\./g,'').replace(',', '.'));
+    return isNaN(n) || n < 0 ? 0 : n;
+  }
+
+  function fmtDate(monthsFromNow){
+    var d = new Date();
+    d.setMonth(d.getMonth() + Math.round(monthsFromNow));
+    return d.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+  }
+
+  rateToggle.addEventListener('click', function(e){
+    var btn = e.target.closest('.rate-btn');
+    if (!btn) return;
+    taxaRetirada = parseFloat(btn.dataset.rate);
+    Array.prototype.forEach.call(rateToggle.children, function(b){ b.classList.toggle('active', b === btn); });
+    update();
+  });
+  rateToggle.children[1].classList.add('active');
+
+  [rendaEl, despesasEl, poupancaEl, riscoEl, autonomoEl, dependentesEl].forEach(function(el){
+    el.addEventListener('input', update);
+    el.addEventListener('change', update);
+  });
+
+  function update(){
+    var renda = parseNum(rendaEl.value);
+    var despesas = parseNum(despesasEl.value);
+    var poupanca = parseNum(poupancaEl.value);
+    var base = parseFloat(riscoEl.value);
+    var meses = base + (autonomoEl.checked ? 3 : 0) + (dependentesEl.checked ? 2 : 0);
+    var alvoReserva = meses * despesas;
+    var capacidade = renda - despesas;
+
+    warnEl.classList.toggle('show', capacidade <= 0);
+
+    document.getElementById('reservaMeses').textContent = meses + ' meses de despesas — base do perfil (' + base + ') + ajustes (' + (meses - base) + ')';
+    document.getElementById('reservaAlvo').textContent = BRL.format(alvoReserva);
+    var pct = alvoReserva > 0 ? Math.min(100, (poupanca / alvoReserva) * 100) : 0;
+    document.getElementById('reservaPct').textContent = Math.round(pct) + '%';
+    document.getElementById('reservaBar').style.width = pct + '%';
+
+    var colchaoInicial = Math.max(despesas, 1000);
+    var monthsToColchao = poupanca >= colchaoInicial ? 0 : (capacidade > 0 ? (colchaoInicial - poupanca) / capacidade : Infinity);
+    var monthsToReserva = poupanca >= alvoReserva ? 0 : (capacidade > 0 ? (alvoReserva - poupanca) / capacidade : Infinity);
+
+    var despesaAnual = despesas * 12;
+    var fiNumero = taxaRetirada > 0 ? despesaAnual / taxaRetirada : 0;
+    document.getElementById('fiAlvo').textContent = BRL.format(fiNumero);
+
+    var i = Math.pow(1 + RETORNO_REAL_ANUAL, 1/12) - 1;
+    var monthsToFIStage = Infinity;
+    if (capacidade > 0 && isFinite(monthsToReserva)){
+      var x = 1 + (fiNumero * i) / capacidade;
+      monthsToFIStage = x > 1 ? Math.log(x) / Math.log(1 + i) : 0;
+    }
+    var monthsToFITotal = isFinite(monthsToReserva) && isFinite(monthsToFIStage) ? monthsToReserva + monthsToFIStage : Infinity;
+
+    document.getElementById('reservaData').textContent = monthsToReserva === 0 ? 'já atingido' : (isFinite(monthsToReserva) ? fmtDate(monthsToReserva) : '—');
+    document.getElementById('fiData').textContent = isFinite(monthsToFITotal) ? fmtDate(monthsToFITotal) : '—';
+
+    var stages = [
+      { titulo:'Colchão inicial', desc:'1 mês de despesas ou R$ 1.000 (o maior)', alvo:colchaoInicial, meses:monthsToColchao, done: poupanca >= colchaoInicial },
+      { titulo:'Fundo de emergência completo', desc: meses + ' meses de despesas, conforme seu perfil de risco', alvo:alvoReserva, meses:monthsToReserva, done: poupanca >= alvoReserva },
+      { titulo:'Aportes para liberdade financeira', desc:'capacidade de poupança investida a ' + (RETORNO_REAL_ANUAL*100).toFixed(0) + '% a.a. real', alvo:null, meses:monthsToReserva, done:false },
+      { titulo:'Liberdade financeira atingida', desc:'patrimônio investido cobre as despesas à taxa de ' + (taxaRetirada*100).toFixed(1) + '%', alvo:fiNumero, meses:monthsToFITotal, done:false }
+    ];
+
+    stagesEl.innerHTML = stages.map(function(s, idx){
+      var amt = s.alvo != null ? BRL.format(s.alvo) : '—';
+      var date = s.meses === 0 ? 'já atingido' : (isFinite(s.meses) ? fmtDate(s.meses) : '—');
+      var doneTag = s.done ? '<span class="stage-done">concluído</span>' : '';
+      return '<li>' +
+        '<span class="stage-n mono">' + (idx+1).toString().padStart(2,'0') + '</span>' +
+        '<span class="stage-txt"><b>' + s.titulo + ' ' + doneTag + '</b><span>' + s.desc + '</span></span>' +
+        '<span class="stage-amt">' + amt + '</span>' +
+        '<span class="stage-date">' + date + '</span>' +
+      '</li>';
+    }).join('');
+  }
+
+  update();
+})();
+</script>
