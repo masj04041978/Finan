@@ -15,6 +15,8 @@ Um sistema de organização financeira pessoal baseado em automação e psicolog
 - [`calculadora/portfolio.html`](calculadora/portfolio.html) — calculadora interativa: informe idade, país, horizonte, risco e aporte mensal, e veja a alocação-alvo e os fundos sugeridos.
 - [`docs/ritual-revisao-financeira-mensal.md`](docs/ritual-revisao-financeira-mensal.md) — roteiro cronometrado de 20 minutos para a revisão financeira mensal, com as perguntas exatas de cada bloco.
 - [`calculadora/revisao-mensal.html`](calculadora/revisao-mensal.html) — formulário interativo do ritual: calcula patrimônio líquido e taxa de poupança, guarda o histórico mês a mês no seu navegador e mostra a tendência.
+- [`docs/automacao-financeira-total.md`](docs/automacao-financeira-total.md) — a mecânica de execução do sistema: o calendário de transferências automáticas, o protocolo para decisões emocionais e o checklist de implementação no banco.
+- [`calculadora/automacao.html`](calculadora/automacao.html) — calculadora interativa: informe renda, dia do pagamento, despesas fixas e metas, e veja o calendário do mês com cada transferência automática no dia certo.
 
 ## A ideia em uma frase
 

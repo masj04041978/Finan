@@ -1,0 +1,327 @@
+<title>Sistema Financeiro Totalmente Automatizado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,560;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#f5f3ea; --surface:#fffdf6; --ink:#1c2a23; --ink-soft:#5a6a62; --line:#ddd5be; --focus:#3f6b53;
+    --moss:#2f5b45; --moss-bg:#e3ebe3;
+    --sky:#2f6579;  --sky-bg:#e1ebee;
+    --rose:#9c4a41; --rose-bg:#f2e2de;
+    --gold:#a8741f; --gold-bg:#f4e7c9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+      --moss:#7cbf9c; --moss-bg:#20362b;
+      --sky:#7cb7cc;  --sky-bg:#1c3038;
+      --rose:#e2a49a; --rose-bg:#3a2622;
+      --gold:#e3b45c; --gold-bg:#3a2f15;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+    --moss:#7cbf9c; --moss-bg:#20362b;
+    --sky:#7cb7cc;  --sky-bg:#1c3038;
+    --rose:#e2a49a; --rose-bg:#3a2622;
+    --gold:#e3b45c; --gold-bg:#3a2f15;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Work Sans",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--gold-bg); }
+  .wrap{ max-width:980px; margin:0 auto; padding:56px 24px 96px; }
+  h1,h2,h3{ font-family:"Fraunces",Georgia,serif; font-weight:650; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",monospace; font-variant-numeric:tabular-nums; }
+
+  header.hero{ border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:40px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--moss); font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--moss); display:inline-block; }
+  h1{ font-size:clamp(28px,4.2vw,42px); line-height:1.1; letter-spacing:-.01em; }
+  .lede{ font-size:16px; line-height:1.6; color:var(--ink-soft); max-width:64ch; margin-top:14px; }
+
+  section{ margin-top:48px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .section-head h2{ font-size:21px; }
+  .section-note{ font-size:13px; color:var(--ink-soft); max-width:38ch; text-align:right; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px 24px; }
+  .field-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  @media (max-width:760px){ .field-grid{ grid-template-columns:1fr 1fr; } }
+  .field label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:6px; }
+  .input-shell{ display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink); padding-bottom:4px; }
+  .input-shell span{ font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-soft); }
+  .field input[type="text"], .field input[type="date"]{ font-family:"IBM Plex Mono",monospace; font-size:15px; font-weight:600; color:var(--ink); background:transparent; border:none; outline:none; width:100%; padding:0; }
+
+  /* despesas table */
+  .exp-grid{ display:grid; grid-template-columns:1.6fr 1fr 0.7fr 28px; border:1px solid var(--line); border-radius:4px; background:var(--surface); overflow:hidden; }
+  .exp-head > div, .exp-row > div{ padding:9px 12px; border-bottom:1px solid var(--line); display:flex; align-items:center; }
+  .exp-head > div{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); }
+  .exp-row:last-of-type > div{ border-bottom:none; }
+  .exp-grid input{ width:100%; border:none; background:transparent; font-family:"IBM Plex Mono",monospace; font-size:13.5px; color:var(--ink); padding:5px 0; outline:none; border-bottom:1px solid transparent; }
+  .exp-grid input[data-f="nome"]{ font-family:"Work Sans",sans-serif; font-size:14px; }
+  .exp-grid input:focus{ border-bottom:1px solid var(--focus); }
+  .rm-btn{ border:none; background:transparent; color:var(--ink-soft); cursor:pointer; font-size:16px; line-height:1; }
+  .rm-btn:hover{ color:var(--rose); }
+  .exp-foot{ display:flex; justify-content:space-between; align-items:center; padding:9px 12px; background:var(--paper); border:1px solid var(--line); border-top:none; border-radius:0 0 4px 4px; }
+  .add-btn{ border:1px dashed var(--line); background:transparent; color:var(--ink-soft); font-size:12.5px; padding:5px 11px; border-radius:20px; cursor:pointer; font-family:"Work Sans",sans-serif; }
+  .add-btn:hover{ border-color:var(--sky); color:var(--sky); }
+
+  /* calendar */
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-dow{ font-size:11px; text-transform:uppercase; color:var(--ink-soft); text-align:center; padding-bottom:4px; }
+  .cal-cell{ min-height:74px; border:1px solid var(--line); border-radius:3px; background:var(--surface); padding:6px; display:flex; flex-direction:column; gap:3px; }
+  .cal-cell.empty{ border:none; background:transparent; }
+  .cal-daynum{ font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-soft); }
+  .cal-tag{ font-size:10px; padding:2px 5px; border-radius:8px; font-weight:600; line-height:1.3; white-space:normal; }
+  @media (max-width:700px){ .cal-cell{ min-height:58px; } .cal-tag{ font-size:8.5px; } }
+
+  .legend{ display:flex; gap:18px; margin-top:14px; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); }
+  .legend-dot{ width:9px; height:9px; border-radius:50%; }
+
+  /* summary */
+  .summary{ border:1px solid var(--line); border-radius:4px; background:var(--surface); overflow:hidden; margin-top:16px; }
+  .sum-grid{ display:grid; grid-template-columns:1.4fr 1fr 0.7fr; }
+  .sum-head > div, .sum-row > div{ padding:10px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; }
+  .sum-head > div{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); }
+  .sum-row:last-child > div{ border-bottom:none; }
+  .sum-row .valor{ font-family:"IBM Plex Mono",monospace; font-weight:600; justify-content:flex-end; }
+  .sum-row .dia{ font-family:"IBM Plex Mono",monospace; color:var(--ink-soft); justify-content:flex-end; }
+
+  ol.protocol, ol.checklist{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
+  ol.protocol li, ol.checklist li{ display:grid; grid-template-columns:28px 1fr; gap:14px; padding:13px 0; border-bottom:1px solid var(--line); }
+  .p-n{ font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--rose); }
+  .c-n{ font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--sky); }
+  .p-txt, .c-txt{ font-size:13.5px; line-height:1.55; }
+  .p-txt b, .c-txt b{ font-weight:600; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Sistema totalmente automatizado</div>
+    <h1>Se depende de você lembrar todo mês, não é automação — é uma tarefa que vai falhar.</h1>
+    <p class="lede">Toda transferência recorrente vira ordem permanente no dia certo. O calendário abaixo mostra exatamente quando cada uma acontece, a partir da sua renda, despesas fixas e metas.</p>
+  </header>
+
+  <section>
+    <div class="section-head"><h2>Sua situação</h2><span class="section-note">valores de exemplo — edite com os seus</span></div>
+    <div class="card">
+      <div class="field-grid">
+        <div class="field"><label for="renda">Renda mensal</label><div class="input-shell"><span>R$</span><input type="text" id="renda" inputmode="decimal" value="8.000,00"></div></div>
+        <div class="field"><label for="diaPagamento">Dia do pagamento</label><div class="input-shell"><input type="text" id="diaPagamento" inputmode="numeric" value="5"><span>do mês</span></div></div>
+        <div class="field"><label for="pctInvest">Pague-se primeiro</label><div class="input-shell"><input type="text" id="pctInvest" inputmode="decimal" value="15"><span>%</span></div></div>
+        <div class="field"><label for="pctSemCulpa">Fundo sem culpa</label><div class="input-shell"><input type="text" id="pctSemCulpa" inputmode="decimal" value="25"><span>%</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Despesas fixas</h2><span class="section-note">nome, valor e dia de vencimento</span></div>
+    <div class="exp-grid">
+      <div class="exp-head"><div>Despesa</div><div>Valor (R$)</div><div>Dia</div><div></div></div>
+      <div id="expRows"></div>
+    </div>
+    <div class="exp-foot"><button class="add-btn" id="addExp">+ adicionar despesa fixa</button></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Meta específica</h2><span class="section-note">opcional — deixe valor alvo em 0 para ignorar</span></div>
+    <div class="card">
+      <div class="field-grid">
+        <div class="field"><label for="metaNome">Nome da meta</label><div class="input-shell"><input type="text" id="metaNome" value="Entrada do apartamento"></div></div>
+        <div class="field"><label for="metaValor">Valor alvo</label><div class="input-shell"><span>R$</span><input type="text" id="metaValor" inputmode="decimal" value="60.000,00"></div></div>
+        <div class="field"><label for="metaGuardado">Já guardado</label><div class="input-shell"><span>R$</span><input type="text" id="metaGuardado" inputmode="decimal" value="5.000,00"></div></div>
+        <div class="field"><label for="metaData">Data alvo</label><div class="input-shell"><input type="date" id="metaData" value="2028-12-01"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Calendário deste mês</h2></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="legend" id="calLegend"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Regras de distribuição</h2></div>
+    <div class="summary">
+      <div class="sum-grid">
+        <div class="sum-head"><div>Destino</div><div style="justify-content:flex-end">Valor mensal</div><div style="justify-content:flex-end">Dia</div></div>
+        <div id="sumRows"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Protocolo para decisões emocionais</h2></div>
+    <ol class="protocol">
+      <li><span class="p-n mono">01</span><span class="p-txt"><b>Regra das 72 horas.</b> Compra não planejada acima de 5% da renda mensal espera 72h antes de sair do fundo sem culpa — nunca de outra conta.</span></li>
+      <li><span class="p-n mono">02</span><span class="p-txt"><b>Uma única fonte para gasto livre.</b> Só o fundo sem culpa cobre impulso. Pague-se primeiro e contas fixas nunca são tocados para isso.</span></li>
+      <li><span class="p-n mono">03</span><span class="p-txt"><b>Sem decisão fora da revisão mensal.</b> Mudar valores ou percentuais só durante o ritual mensal de revisão — nunca em resposta a um gasto isolado.</span></li>
+      <li><span class="p-n mono">04</span><span class="p-txt"><b>Gatilho identificado, regra pronta.</b> Nos seus 2-3 momentos de maior risco de gasto por impulso, defina agora o que fazer no lugar de abrir o cartão.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Checklist de implementação no banco</h2></div>
+    <ol class="checklist">
+      <li><span class="c-n mono">01</span><span class="c-txt">Configurar TED/PIX agendado para investimento, no dia do pagamento.</span></li>
+      <li><span class="c-n mono">02</span><span class="c-txt">Configurar débito automático de cada despesa fixa, na respectiva data de vencimento.</span></li>
+      <li><span class="c-n mono">03</span><span class="c-txt">Configurar transferência automática para a conta/cartão do fundo sem culpa, um dia após o pagamento.</span></li>
+      <li><span class="c-n mono">04</span><span class="c-txt">Se houver meta, configurar o aporte mensal para a conta dedicada, no mesmo dia do fundo sem culpa.</span></li>
+      <li><span class="c-n mono">05</span><span class="c-txt">Revisar tudo uma vez por mês, dentro do ritual de revisão — nunca fora dele.</span></li>
+    </ol>
+  </section>
+
+  <footer>
+    Aporte da meta = (valor alvo − já guardado) ÷ meses restantes até a data alvo. Calendário refere-se ao mês corrente; dias além do fim do mês são ajustados para o último dia disponível. Metodologia completa em <span class="mono">docs/automacao-financeira-total.md</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+  var uid = 0;
+
+  var despesas = [
+    { id: uid++, nome:'Moradia', valor:1800, dia:5 },
+    { id: uid++, nome:'Contas da casa', valor:450, dia:8 },
+    { id: uid++, nome:'Seguro', valor:180, dia:10 },
+    { id: uid++, nome:'Assinaturas / financeiro', valor:150, dia:12 }
+  ];
+
+  var expRowsEl = document.getElementById('expRows');
+  var rendaEl = document.getElementById('renda');
+  var diaPagEl = document.getElementById('diaPagamento');
+  var pctInvestEl = document.getElementById('pctInvest');
+  var pctSemCulpaEl = document.getElementById('pctSemCulpa');
+  var metaNomeEl = document.getElementById('metaNome');
+  var metaValorEl = document.getElementById('metaValor');
+  var metaGuardadoEl = document.getElementById('metaGuardado');
+  var metaDataEl = document.getElementById('metaData');
+  var calGrid = document.getElementById('calGrid');
+  var calLegend = document.getElementById('calLegend');
+  var sumRows = document.getElementById('sumRows');
+
+  function parseNum(str){ var n = parseFloat(String(str).replace(/\./g,'').replace(',', '.')); return isNaN(n)||n<0 ? 0 : n; }
+  function clampDay(d, max){ return Math.min(Math.max(1, Math.round(d)), max); }
+
+  function renderExpRows(){
+    expRowsEl.innerHTML = '';
+    despesas.forEach(function(d){
+      var row = document.createElement('div');
+      row.className = 'exp-row';
+      row.dataset.id = d.id;
+      row.innerHTML =
+        '<div><input data-f="nome" value="' + d.nome + '"></div>' +
+        '<div><input data-f="valor" inputmode="decimal" value="' + d.valor.toLocaleString('pt-BR') + '"></div>' +
+        '<div><input data-f="dia" inputmode="numeric" value="' + d.dia + '"></div>' +
+        '<div><button class="rm-btn" data-rm aria-label="Remover">×</button></div>';
+      expRowsEl.appendChild(row);
+    });
+  }
+  expRowsEl.addEventListener('input', function(e){
+    var row = e.target.closest('.exp-row'); if (!row) return;
+    var d = despesas.filter(function(x){ return x.id == row.dataset.id; })[0]; if (!d) return;
+    var f = e.target.dataset.f;
+    if (f === 'nome') d.nome = e.target.value;
+    else if (f === 'valor') d.valor = parseNum(e.target.value);
+    else if (f === 'dia') d.dia = parseNum(e.target.value);
+    update();
+  });
+  expRowsEl.addEventListener('click', function(e){
+    if (e.target.matches('[data-rm]')){
+      var row = e.target.closest('.exp-row');
+      despesas = despesas.filter(function(x){ return x.id != row.dataset.id; });
+      renderExpRows(); update();
+    }
+  });
+  document.getElementById('addExp').addEventListener('click', function(){
+    despesas.push({ id: uid++, nome:'Nova despesa', valor:100, dia:15 });
+    renderExpRows(); update();
+  });
+
+  function monthsBetween(now, target){
+    var months = (target.getFullYear()-now.getFullYear())*12 + (target.getMonth()-now.getMonth());
+    return Math.max(0, months);
+  }
+
+  function update(){
+    var renda = parseNum(rendaEl.value);
+    var now = new Date();
+    var daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+    var diaPag = clampDay(parseNum(diaPagEl.value) || 1, daysInMonth);
+    var diaPos = clampDay(diaPag + 1, daysInMonth);
+    var pctInvest = parseNum(pctInvestEl.value);
+    var pctSemCulpa = parseNum(pctSemCulpaEl.value);
+    var valInvest = renda * pctInvest/100;
+    var valSemCulpa = renda * pctSemCulpa/100;
+
+    var metaValor = parseNum(metaValorEl.value);
+    var metaGuardado = parseNum(metaGuardadoEl.value);
+    var metaAporte = 0;
+    if (metaValor > 0){
+      var target = new Date(metaDataEl.value || now);
+      var months = monthsBetween(now, target);
+      var restante = Math.max(0, metaValor - metaGuardado);
+      metaAporte = months > 0 ? restante/months : restante;
+    }
+
+    var events = {};
+    function addEvent(dia, label, color){
+      dia = clampDay(dia, daysInMonth);
+      if (!events[dia]) events[dia] = [];
+      events[dia].push({ label:label, color:color });
+    }
+
+    addEvent(diaPag, 'Pague-se primeiro', 'var(--moss)');
+    despesas.forEach(function(d){ addEvent(d.dia, d.nome, 'var(--sky)'); });
+    addEvent(diaPos, 'Sem culpa', 'var(--gold)');
+    if (metaValor > 0) addEvent(diaPos, metaNomeEl.value || 'Meta', 'color-mix(in srgb, var(--moss) 45%, var(--gold) 55%)');
+
+    var firstWeekday = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+    var dows = ['dom','seg','ter','qua','qui','sex','sáb'];
+    var cells = dows.map(function(d){ return '<div class="cal-dow">' + d + '</div>'; }).join('');
+    for (var i=0;i<firstWeekday;i++) cells += '<div class="cal-cell empty"></div>';
+    for (var day=1; day<=daysInMonth; day++){
+      var evs = events[day] || [];
+      var tags = evs.map(function(e){ return '<span class="cal-tag" style="background:' + e.color + ';color:var(--surface)">' + e.label + '</span>'; }).join('');
+      cells += '<div class="cal-cell"><span class="cal-daynum">' + day + '</span>' + tags + '</div>';
+    }
+    calGrid.innerHTML = cells;
+
+    calLegend.innerHTML =
+      '<span class="legend-item"><span class="legend-dot" style="background:var(--moss)"></span>Pague-se primeiro</span>' +
+      '<span class="legend-item"><span class="legend-dot" style="background:var(--sky)"></span>Despesas fixas</span>' +
+      '<span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Sem culpa</span>' +
+      (metaValor > 0 ? '<span class="legend-item"><span class="legend-dot" style="background:color-mix(in srgb, var(--moss) 45%, var(--gold) 55%)"></span>Meta</span>' : '');
+
+    var rows = [
+      { destino:'Pague-se primeiro (investimento)', valor:valInvest, dia:diaPag, color:'var(--moss)' }
+    ];
+    despesas.forEach(function(d){ rows.push({ destino:d.nome, valor:d.valor, dia:d.dia, color:'var(--sky)' }); });
+    rows.push({ destino:'Fundo sem culpa', valor:valSemCulpa, dia:diaPos, color:'var(--gold)' });
+    if (metaValor > 0) rows.push({ destino:'Meta: ' + (metaNomeEl.value || '—'), valor:metaAporte, dia:diaPos, color:'color-mix(in srgb, var(--moss) 45%, var(--gold) 55%)' });
+
+    sumRows.innerHTML = rows.map(function(r){
+      return '<div class="sum-row">' +
+        '<div style="color:' + r.color + ';font-weight:600">' + r.destino + '</div>' +
+        '<div class="valor">' + BRL.format(r.valor) + '</div>' +
+        '<div class="dia">dia ' + r.dia + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  renderExpRows();
+  [rendaEl, diaPagEl, pctInvestEl, pctSemCulpaEl, metaNomeEl, metaValorEl, metaGuardadoEl, metaDataEl].forEach(function(el){
+    el.addEventListener('input', update);
+    el.addEventListener('change', update);
+  });
+  update();
+})();
+</script>
