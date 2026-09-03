@@ -1,0 +1,401 @@
+<title>Plano de Quitação de Dívidas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,560;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#f5f3ea; --surface:#fffdf6; --ink:#1c2a23; --ink-soft:#5a6a62; --line:#ddd5be; --focus:#3f6b53;
+    --moss:#2f5b45; --moss-bg:#e3ebe3;
+    --sky:#2f6579;  --sky-bg:#e1ebee;
+    --rose:#9c4a41; --rose-bg:#f2e2de;
+    --gold:#a8741f; --gold-bg:#f4e7c9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+      --moss:#7cbf9c; --moss-bg:#20362b;
+      --sky:#7cb7cc;  --sky-bg:#1c3038;
+      --rose:#e2a49a; --rose-bg:#3a2622;
+      --gold:#e3b45c; --gold-bg:#3a2f15;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+    --moss:#7cbf9c; --moss-bg:#20362b;
+    --sky:#7cb7cc;  --sky-bg:#1c3038;
+    --rose:#e2a49a; --rose-bg:#3a2622;
+    --gold:#e3b45c; --gold-bg:#3a2f15;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Work Sans",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--gold-bg); }
+  .wrap{ max-width:960px; margin:0 auto; padding:56px 24px 96px; }
+  h1,h2,h3{ font-family:"Fraunces",Georgia,serif; font-weight:650; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",monospace; font-variant-numeric:tabular-nums; }
+
+  header.hero{ border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:40px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--rose); font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--rose); display:inline-block; }
+  h1{ font-size:clamp(28px,4.2vw,42px); line-height:1.1; letter-spacing:-.01em; }
+  .lede{ font-size:16px; line-height:1.6; color:var(--ink-soft); max-width:62ch; margin-top:14px; }
+
+  section{ margin-top:48px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .section-head h2{ font-size:21px; }
+  .section-note{ font-size:13px; color:var(--ink-soft); max-width:38ch; text-align:right; }
+
+  /* debt table */
+  .debts{ border:1px solid var(--line); border-radius:4px; background:var(--surface); overflow:hidden; }
+  .debts-grid{ display:grid; grid-template-columns:1.6fr 1fr 0.8fr 1fr 28px; }
+  .debts-head, .debt-row{ display:contents; }
+  .debts-head > div{ font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); padding:12px 14px; border-bottom:1px solid var(--line); }
+  .debt-row > div{ padding:8px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; }
+  .debt-row:last-of-type > div{ border-bottom:none; }
+  .debts input{
+    width:100%; border:none; background:transparent; font-family:"IBM Plex Mono",monospace; font-size:14px;
+    color:var(--ink); padding:6px 0; outline:none; border-bottom:1px solid transparent;
+  }
+  .debts input[data-f="nome"]{ font-family:"Work Sans",sans-serif; font-size:14.5px; }
+  .debts input:focus{ border-bottom:1px solid var(--focus); }
+  .rm-btn{ border:none; background:transparent; color:var(--ink-soft); cursor:pointer; font-size:16px; line-height:1; padding:4px; }
+  .rm-btn:hover{ color:var(--rose); }
+  .debts-foot{ display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--paper); }
+  .add-btn{
+    border:1px dashed var(--line); background:transparent; color:var(--ink-soft); font-size:13px;
+    padding:6px 12px; border-radius:20px; cursor:pointer; font-family:"Work Sans",sans-serif;
+  }
+  .add-btn:hover{ border-color:var(--moss); color:var(--moss); }
+  .example-tag{ font-size:12px; color:var(--ink-soft); }
+
+  .extra-row{ margin-top:18px; display:flex; align-items:flex-end; gap:20px; flex-wrap:wrap; }
+  .extra-field label{ display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px; }
+  .income-input-shell{ display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink); padding-bottom:4px; }
+  .income-input-shell span{ font-family:"IBM Plex Mono",monospace; font-size:17px; color:var(--ink-soft); }
+  #extra{ font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:600; color:var(--ink); background:transparent; border:none; outline:none; width:160px; padding:0; }
+  .total-ataque{ font-size:13px; color:var(--ink-soft); }
+  .total-ataque strong{ color:var(--ink); font-family:"IBM Plex Mono",monospace; }
+
+  /* method cards */
+  .methods{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:760px){ .methods{ grid-template-columns:1fr; } }
+  .method{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:20px; display:flex; flex-direction:column; gap:12px; position:relative; }
+  .method-name{ font-family:"Fraunces",serif; font-size:18px; font-weight:650; }
+  .method-tag{ font-size:12px; color:var(--ink-soft); line-height:1.4; }
+  .badge{ position:absolute; top:16px; right:16px; font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; padding:3px 8px; border-radius:20px; font-weight:600; }
+  .stat-row{ display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid var(--line); padding-top:10px; }
+  .stat-label{ font-size:12px; color:var(--ink-soft); }
+  .stat-val{ font-size:15px; font-weight:600; }
+  .order-list{ font-size:12.5px; color:var(--ink-soft); line-height:1.7; }
+  .order-list b{ color:var(--ink); font-weight:500; }
+
+  /* chart */
+  .chart-card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px; }
+  .legend{ display:flex; gap:18px; margin-bottom:12px; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); }
+  .legend-dot{ width:9px; height:9px; border-radius:50%; }
+  svg text{ font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-soft); }
+  .axis-line{ stroke:var(--line); stroke-width:1; }
+  .grid-line{ stroke:var(--line); stroke-width:1; stroke-dasharray:2 3; }
+  .method-line{ fill:none; stroke-width:2.4; }
+
+  /* motivation tips */
+  .tips{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  @media (max-width:640px){ .tips{ grid-template-columns:1fr; } }
+  .tip{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:14px 16px; }
+  .tip-title{ font-size:13.5px; font-weight:600; margin-bottom:4px; }
+  .tip-txt{ font-size:12.5px; color:var(--ink-soft); line-height:1.55; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Plano de quitação de dívidas</div>
+    <h1>Sua dívida tem prazo de validade — o método só decide se ele fica mais curto.</h1>
+    <p class="lede">Bola de neve, avalanche ou híbrido: os três usam o mesmo dinheiro, só mudam a ordem de ataque. Edite suas dívidas reais abaixo e compare a data de quitação e o total de juros de cada método.</p>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <h2>Suas dívidas</h2>
+      <span class="example-tag">valores de exemplo — edite com as suas dívidas reais</span>
+    </div>
+    <div class="debts">
+      <div class="debts-grid">
+        <div class="debts-head">
+          <div>Dívida</div><div>Saldo (R$)</div><div>Taxa (% a.m.)</div><div>Mínimo (R$)</div><div></div>
+        </div>
+        <div id="debtRows"></div>
+      </div>
+      <div class="debts-foot">
+        <button class="add-btn" id="addDebt">+ adicionar dívida</button>
+      </div>
+    </div>
+
+    <div class="extra-row">
+      <div class="extra-field">
+        <label for="extra">Extra mensal disponível</label>
+        <div class="income-input-shell"><span>R$</span><input id="extra" inputmode="decimal" value="500,00"></div>
+      </div>
+      <div class="total-ataque">orçamento de ataque total (mínimos + extra): <strong id="totalAtaque"></strong> / mês</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Comparação dos métodos</h2>
+      <div class="section-note">Data prevista de quitação e juros totais até lá.</div>
+    </div>
+    <div class="methods" id="methods"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Dívida total restante ao longo do tempo</h2></div>
+    <div class="chart-card">
+      <div class="legend" id="legend"></div>
+      <svg id="chart" viewBox="0 0 640 260" width="100%" role="img" aria-label="Comparação da dívida total restante ao longo do tempo para os três métodos"></svg>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Para manter a motivação até o fim</h2></div>
+    <div class="tips">
+      <div class="tip"><div class="tip-title">Congele o cartão</div><div class="tip-txt">Guarde ou bloqueie compras novas enquanto o plano roda. Nenhum método vence se a dívida cresce mais rápido do que você paga.</div></div>
+      <div class="tip"><div class="tip-title">Automatize o extra</div><div class="tip-txt">Transferência automática no dia do pagamento para a dívida prioritária. Disciplina não escala — automação escala.</div></div>
+      <div class="tip"><div class="tip-title">Visualize o progresso</div><div class="tip-txt">Uma barra do total restante caindo motiva mais que uma meta abstrata. O cérebro responde a movimento visível.</div></div>
+      <div class="tip"><div class="tip-title">Comemore cada quitação</div><div class="tip-txt">Por menor que seja a dívida, o marco concreto sustenta a motivação até a próxima — é o motor da bola de neve.</div></div>
+      <div class="tip"><div class="tip-title">Reformule a narrativa</div><div class="tip-txt">De "estou preso pagando dívida" para "estou comprando minha liberdade, uma parcela de cada vez".</div></div>
+      <div class="tip"><div class="tip-title">Dê um prazo e um nome</div><div class="tip-txt">Sacrifício com prazo definido ("Operação zerar 2026") é mais sustentável do que restrição sem fim à vista.</div></div>
+    </div>
+  </section>
+
+  <footer>
+    Simulação mês a mês: juros incidem sobre o saldo, depois os mínimos são pagos, e o extra (mais os mínimos já liberados por dívidas quitadas) vai para a dívida prioritária de cada método. Ordem fixada no início da simulação. Metodologia completa em <span class="mono">docs/plano-quitacao-dividas.md</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+  var uid = 0;
+
+  var debts = [
+    { id: uid++, nome:'Cartão de crédito', saldo:4200, taxa:14,  min:300 },
+    { id: uid++, nome:'Cheque especial',   saldo:1800, taxa:10,  min:200 },
+    { id: uid++, nome:'Empréstimo pessoal',saldo:7500, taxa:3.5, min:450 },
+    { id: uid++, nome:'Financiamento de veículo', saldo:12000, taxa:1.8, min:600 }
+  ];
+
+  var rowsEl = document.getElementById('debtRows');
+  var extraInput = document.getElementById('extra');
+  var totalAtaqueEl = document.getElementById('totalAtaque');
+  var methodsEl = document.getElementById('methods');
+  var legendEl = document.getElementById('legend');
+  var chartEl = document.getElementById('chart');
+
+  function parseNum(str){
+    var n = parseFloat(String(str).replace(/\./g,'').replace(',', '.'));
+    return isNaN(n) || n < 0 ? 0 : n;
+  }
+  function getExtra(){ return parseNum(extraInput.value); }
+
+  function renderRows(){
+    rowsEl.innerHTML = '';
+    debts.forEach(function(d){
+      var row = document.createElement('div');
+      row.className = 'debt-row';
+      row.innerHTML =
+        '<div><input data-f="nome" value="' + d.nome + '"></div>' +
+        '<div><input data-f="saldo" inputmode="decimal" value="' + d.saldo.toLocaleString('pt-BR') + '"></div>' +
+        '<div><input data-f="taxa" inputmode="decimal" value="' + String(d.taxa).replace('.', ',') + '"></div>' +
+        '<div><input data-f="min" inputmode="decimal" value="' + d.min.toLocaleString('pt-BR') + '"></div>' +
+        '<div><button class="rm-btn" data-rm aria-label="Remover ' + d.nome + '">×</button></div>';
+      row.dataset.id = d.id;
+      rowsEl.appendChild(row);
+    });
+  }
+
+  rowsEl.addEventListener('input', function(e){
+    var row = e.target.closest('.debt-row');
+    if (!row) return;
+    var d = debts.filter(function(x){ return x.id == row.dataset.id; })[0];
+    if (!d) return;
+    var f = e.target.dataset.f;
+    if (f === 'nome') d.nome = e.target.value;
+    else if (f === 'saldo') d.saldo = parseNum(e.target.value);
+    else if (f === 'taxa') d.taxa = parseFloat(String(e.target.value).replace(',', '.')) || 0;
+    else if (f === 'min') d.min = parseNum(e.target.value);
+    update();
+  });
+
+  rowsEl.addEventListener('click', function(e){
+    if (e.target.matches('[data-rm]')){
+      var row = e.target.closest('.debt-row');
+      debts = debts.filter(function(x){ return x.id != row.dataset.id; });
+      renderRows();
+      update();
+    }
+  });
+
+  document.getElementById('addDebt').addEventListener('click', function(){
+    debts.push({ id: uid++, nome:'Nova dívida', saldo:1000, taxa:5, min:100 });
+    renderRows();
+    update();
+  });
+
+  extraInput.addEventListener('input', update);
+
+  function order_snowball(list){ return list.slice().sort(function(a,b){ return a.saldo - b.saldo; }).map(function(d){ return d.id; }); }
+  function order_avalanche(list){ return list.slice().sort(function(a,b){ return b.taxa - a.taxa; }).map(function(d){ return d.id; }); }
+  function order_hybrid(list){
+    var total = list.reduce(function(s,d){ return s + d.saldo; }, 0);
+    var threshold = Math.max(1000, total * 0.10);
+    var quick = list.filter(function(d){ return d.saldo <= threshold; }).sort(function(a,b){ return a.saldo - b.saldo; });
+    var rest = list.filter(function(d){ return d.saldo > threshold; }).sort(function(a,b){ return b.taxa - a.taxa; });
+    return quick.concat(rest).map(function(d){ return d.id; });
+  }
+
+  function simulate(list, extra, orderIds){
+    var CAP = 600;
+    var sim = list.map(function(d){ return { id:d.id, saldo:d.saldo, taxa:d.taxa/100, min:d.min }; });
+    var byId = {}; sim.forEach(function(d){ byId[d.id] = d; });
+    var month = 0, totalJuros = 0;
+    var startTotal = sim.reduce(function(s,d){ return s + d.saldo; }, 0);
+    var history = [{ m:0, total:startTotal }];
+
+    while (sim.some(function(d){ return d.saldo > 0.009; }) && month < CAP){
+      month++;
+      sim.forEach(function(d){
+        if (d.saldo > 0.009){ var j = d.saldo * d.taxa; d.saldo += j; totalJuros += j; }
+      });
+      var pool = extra;
+      sim.forEach(function(d){
+        if (d.saldo <= 0.009){ pool += d.min; }
+        else { var pay = Math.min(d.min, d.saldo); d.saldo -= pay; }
+      });
+      for (var i=0;i<orderIds.length && pool>0.009;i++){
+        var d2 = byId[orderIds[i]];
+        if (!d2 || d2.saldo <= 0.009) continue;
+        var pay2 = Math.min(pool, d2.saldo);
+        d2.saldo -= pay2; pool -= pay2;
+      }
+      var totalNow = sim.reduce(function(s,d){ return s + Math.max(0,d.saldo); }, 0);
+      history.push({ m:month, total: totalNow });
+    }
+
+    var quitado = month < CAP;
+    var data = new Date();
+    data.setMonth(data.getMonth() + month);
+
+    return { months: month, totalJuros: totalJuros, quitado: quitado, dataQuitacao: data, history: history };
+  }
+
+  var METHODS = [
+    { id:'bola_de_neve', nome:'Bola de neve', accent:'--moss', bg:'--moss-bg', desc:'Ataca a menor dívida primeiro — vitórias rápidas.', orderFn: order_snowball },
+    { id:'avalanche',    nome:'Avalanche',     accent:'--sky',  bg:'--sky-bg',  desc:'Ataca a maior taxa primeiro — menos juros no total.', orderFn: order_avalanche },
+    { id:'hibrido',      nome:'Híbrido',       accent:'--gold', bg:'--gold-bg', desc:'Quita as pequenas primeiro, depois muda para maior taxa.', orderFn: order_hybrid }
+  ];
+
+  function fmtDate(d){
+    return d.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+  }
+
+  function renderLegend(){
+    legendEl.innerHTML = METHODS.map(function(m){
+      return '<span class="legend-item"><span class="legend-dot" style="background:var(' + m.accent + ')"></span>' + m.nome + '</span>';
+    }).join('');
+  }
+
+  function shortBRL(v){
+    if (v >= 1000) return 'R$ ' + Math.round(v/1000) + 'k';
+    return 'R$ ' + Math.round(v);
+  }
+
+  function renderChart(results){
+    var maxM = Math.max.apply(null, results.map(function(r){ return r.history[r.history.length-1].m; }));
+    var maxV = results[0].history[0].total;
+    var pad = { l:44, r:16, t:14, b:26 };
+    var W = 640, H = 260;
+    var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+
+    function x(m){ return pad.l + (maxM > 0 ? (m/maxM) : 0) * plotW; }
+    function y(v){ return pad.t + (1 - (maxV > 0 ? v/maxV : 0)) * plotH; }
+
+    var svg = '';
+    for (var g=0; g<=4; g++){
+      var val = maxV * g/4;
+      var yy = y(val);
+      svg += '<line class="grid-line" x1="' + pad.l + '" x2="' + (W-pad.r) + '" y1="' + yy + '" y2="' + yy + '"></line>';
+      svg += '<text x="4" y="' + (yy+3) + '">' + shortBRL(val) + '</text>';
+    }
+    svg += '<line class="axis-line" x1="' + pad.l + '" x2="' + (W-pad.r) + '" y1="' + (H-pad.b) + '" y2="' + (H-pad.b) + '"></line>';
+
+    var steps = maxM <= 24 ? 3 : (maxM <= 72 ? 12 : 24);
+    for (var mm=0; mm<=maxM; mm+=steps){
+      svg += '<text x="' + (x(mm)-8) + '" y="' + (H-6) + '">' + mm + 'm</text>';
+    }
+
+    results.forEach(function(r){
+      var d = r.history.map(function(h,i){ return (i===0?'M':'L') + x(h.m).toFixed(1) + ' ' + y(h.total).toFixed(1); }).join(' ');
+      svg += '<path class="method-line" d="' + d + '" style="stroke:var(' + r.accent + ')"></path>';
+      var last = r.history[r.history.length-1];
+      svg += '<circle cx="' + x(last.m).toFixed(1) + '" cy="' + y(last.total).toFixed(1) + '" r="3.5" fill="var(' + r.accent + ')"></circle>';
+    });
+
+    chartEl.innerHTML = svg;
+  }
+
+  function renderMethods(results){
+    var fastest = results.reduce(function(a,b){ return b.months < a.months ? b : a; });
+    var cheapest = results.reduce(function(a,b){ return b.totalJuros < a.totalJuros ? b : a; });
+
+    methodsEl.innerHTML = results.map(function(r){
+      var badge = '';
+      if (r === fastest && r === cheapest) badge = '<span class="badge" style="background:var(' + r.bg + ');color:var(' + r.accent + ')">mais rápido · menos juros</span>';
+      else if (r === fastest) badge = '<span class="badge" style="background:var(' + r.bg + ');color:var(' + r.accent + ')">mais rápido</span>';
+      else if (r === cheapest) badge = '<span class="badge" style="background:var(' + r.bg + ');color:var(' + r.accent + ')">menos juros</span>';
+
+      var orderNames = r.orderIds.map(function(id){
+        var d = debts.filter(function(x){ return x.id == id; })[0];
+        return d ? d.nome : '';
+      }).filter(Boolean).join(' → ');
+
+      var dataTxt = r.quitado ? fmtDate(r.dataQuitacao) : 'não quita em 50 anos com esse extra';
+
+      return '<div class="method">' + badge +
+        '<div class="method-name" style="color:var(' + r.accent + ')">' + r.nome + '</div>' +
+        '<div class="method-tag">' + r.desc + '</div>' +
+        '<div class="stat-row"><span class="stat-label">quitação prevista</span><span class="stat-val mono">' + dataTxt + '</span></div>' +
+        '<div class="stat-row"><span class="stat-label">tempo</span><span class="stat-val mono">' + r.months + ' meses</span></div>' +
+        '<div class="stat-row"><span class="stat-label">juros totais</span><span class="stat-val mono" style="color:var(--rose)">' + BRL.format(r.totalJuros) + '</span></div>' +
+        '<div class="order-list">ordem: <b>' + (orderNames || '—') + '</b></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function update(){
+    var extra = getExtra();
+    var totalMin = debts.reduce(function(s,d){ return s + d.min; }, 0);
+    totalAtaqueEl.textContent = BRL.format(totalMin + extra);
+
+    if (debts.length === 0){ methodsEl.innerHTML = ''; chartEl.innerHTML=''; return; }
+
+    var results = METHODS.map(function(m){
+      var orderIds = m.orderFn(debts);
+      var r = simulate(debts, extra, orderIds);
+      r.id = m.id; r.nome = m.nome; r.accent = m.accent; r.bg = m.bg; r.desc = m.desc; r.orderIds = orderIds;
+      return r;
+    });
+
+    renderMethods(results);
+    renderChart(results);
+  }
+
+  renderRows();
+  renderLegend();
+  update();
+})();
+</script>
