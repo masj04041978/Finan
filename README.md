@@ -11,6 +11,8 @@ Um sistema de organização financeira pessoal baseado em automação e psicolog
 - [`calculadora/dividas.html`](calculadora/dividas.html) — calculadora interativa: liste suas dívidas e o extra mensal disponível, e compare a data de quitação e o total de juros dos 3 métodos.
 - [`docs/fundo-emergencia-liberdade-financeira.md`](docs/fundo-emergencia-liberdade-financeira.md) — cálculo do fundo de emergência ajustado por risco (não um "3-6 meses" genérico), do número de liberdade financeira com taxa de retirada conservadora, e um plano por etapas.
 - [`calculadora/liberdade-financeira.html`](calculadora/liberdade-financeira.html) — calculadora interativa: informe renda, despesas, poupança atual e perfil de risco, e veja as 4 etapas com valores e datas estimadas.
+- [`docs/portfolio-passivo-bogleheads.md`](docs/portfolio-passivo-bogleheads.md) — construção de carteira passiva estilo Bogleheads: alocação ações/renda fixa por idade, risco e horizonte, com exemplos de fundos por país.
+- [`calculadora/portfolio.html`](calculadora/portfolio.html) — calculadora interativa: informe idade, país, horizonte, risco e aporte mensal, e veja a alocação-alvo e os fundos sugeridos.
 
 ## A ideia em uma frase
 

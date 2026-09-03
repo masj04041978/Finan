@@ -1,0 +1,274 @@
+<title>Construtor de Portfólio Passivo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,560;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#f5f3ea; --surface:#fffdf6; --ink:#1c2a23; --ink-soft:#5a6a62; --line:#ddd5be; --focus:#3f6b53;
+    --moss:#2f5b45; --moss-bg:#e3ebe3;
+    --sky:#2f6579;  --sky-bg:#e1ebee;
+    --rose:#9c4a41; --rose-bg:#f2e2de;
+    --gold:#a8741f; --gold-bg:#f4e7c9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+      --moss:#7cbf9c; --moss-bg:#20362b;
+      --sky:#7cb7cc;  --sky-bg:#1c3038;
+      --rose:#e2a49a; --rose-bg:#3a2622;
+      --gold:#e3b45c; --gold-bg:#3a2f15;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+    --moss:#7cbf9c; --moss-bg:#20362b;
+    --sky:#7cb7cc;  --sky-bg:#1c3038;
+    --rose:#e2a49a; --rose-bg:#3a2622;
+    --gold:#e3b45c; --gold-bg:#3a2f15;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Work Sans",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--gold-bg); }
+  .wrap{ max-width:960px; margin:0 auto; padding:56px 24px 96px; }
+  h1,h2,h3{ font-family:"Fraunces",Georgia,serif; font-weight:650; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",monospace; font-variant-numeric:tabular-nums; }
+
+  header.hero{ border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:40px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--moss); font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--moss); display:inline-block; }
+  h1{ font-size:clamp(28px,4.2vw,42px); line-height:1.1; letter-spacing:-.01em; }
+  .lede{ font-size:16px; line-height:1.6; color:var(--ink-soft); max-width:64ch; margin-top:14px; }
+
+  section{ margin-top:48px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .section-head h2{ font-size:21px; }
+  .section-note{ font-size:13px; color:var(--ink-soft); max-width:38ch; text-align:right; }
+
+  .inputs-card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px 24px; }
+  .field-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:20px; }
+  @media (max-width:820px){ .field-grid{ grid-template-columns:1fr 1fr; } }
+  .field label{ display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px; }
+  .input-shell{ display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink); padding-bottom:4px; }
+  .input-shell span{ font-family:"IBM Plex Mono",monospace; font-size:14px; color:var(--ink-soft); }
+  .field input[type="text"]{ font-family:"IBM Plex Mono",monospace; font-size:17px; font-weight:600; color:var(--ink); background:transparent; border:none; outline:none; width:100%; padding:0; }
+  select{ font-family:"Work Sans",sans-serif; font-size:14px; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:3px; padding:9px 10px; width:100%; }
+
+  /* allocation bar */
+  .alloc-card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px 24px; }
+  .alloc-bar{ display:flex; height:34px; border-radius:4px; overflow:hidden; border:1px solid var(--line); }
+  .alloc-seg{ display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono",monospace; font-size:12.5px; font-weight:600; color:#fff; min-width:0; overflow:hidden; white-space:nowrap; }
+  .alloc-legend{ display:flex; gap:24px; margin-top:16px; flex-wrap:wrap; }
+  .alloc-legend-item{ display:flex; align-items:center; gap:8px; }
+  .alloc-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .alloc-legend-txt b{ display:block; font-size:13.5px; }
+  .alloc-legend-txt span{ font-size:12px; color:var(--ink-soft); }
+
+  /* fund table */
+  .funds{ border:1px solid var(--line); border-radius:4px; background:var(--surface); overflow:hidden; margin-top:16px; }
+  .funds-grid{ display:grid; grid-template-columns:1.3fr 1.6fr 0.7fr 0.9fr; }
+  .funds-head > div, .fund-row > div{ padding:11px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; }
+  .funds-head > div{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); }
+  .fund-row:last-child > div{ border-bottom:none; }
+  .fund-row .classe{ font-weight:600; font-size:13.5px; }
+  .fund-row .exemplo{ font-size:13px; color:var(--ink-soft); }
+  .fund-row .pct, .fund-row .valor{ font-family:"IBM Plex Mono",monospace; font-size:13.5px; font-weight:600; justify-content:flex-end; text-align:right; }
+  @media (max-width:700px){
+    .funds-grid{ grid-template-columns:1fr 1fr; }
+    .funds-head > div:nth-child(2), .funds-head > div:nth-child(3){ display:none; }
+    .fund-row .exemplo{ grid-column:1 / -1; border-top:none; }
+  }
+
+  .callout{ margin-top:16px; background:var(--gold-bg); border:1px solid color-mix(in srgb, var(--gold) 35%, transparent); border-radius:3px; padding:12px 16px; font-size:13.5px; color:var(--ink-soft); }
+  .callout b{ color:var(--gold); }
+
+  .principles{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  @media (max-width:640px){ .principles{ grid-template-columns:1fr; } }
+  .principle{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:14px 16px; }
+  .principle-title{ font-size:13.5px; font-weight:600; margin-bottom:4px; }
+  .principle-txt{ font-size:12.5px; color:var(--ink-soft); line-height:1.55; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Construtor de portfólio passivo · estilo Bogleheads</div>
+    <h1>Poucos fundos, custo baixo, aporte automático — e você nunca mais tenta adivinhar o mercado.</h1>
+    <p class="lede">Sem escolher ações, sem cronometrar entrada e saída. A alocação vem da sua idade, horizonte e tolerância ao risco; os fundos de exemplo vêm do seu país. Ajuste abaixo com os seus dados.</p>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <h2>Seu perfil</h2>
+      <span class="section-note">valores de exemplo — edite com os seus</span>
+    </div>
+    <div class="inputs-card">
+      <div class="field-grid">
+        <div class="field">
+          <label for="idade">Idade</label>
+          <div class="input-shell"><input type="text" id="idade" inputmode="numeric" value="32"><span>anos</span></div>
+        </div>
+        <div class="field">
+          <label for="pais">País / mercado</label>
+          <select id="pais">
+            <option value="BR" selected>Brasil</option>
+            <option value="US">Estados Unidos</option>
+            <option value="OUTRO">Outro / internacional</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="horizonte">Horizonte de tempo</label>
+          <div class="input-shell"><input type="text" id="horizonte" inputmode="numeric" value="30"><span>anos</span></div>
+        </div>
+        <div class="field">
+          <label for="risco">Tolerância ao risco</label>
+          <select id="risco">
+            <option value="conservador">Conservador</option>
+            <option value="moderado" selected>Moderado</option>
+            <option value="arrojado">Arrojado</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="valor">Aporte mensal</label>
+          <div class="input-shell"><span id="moedaLabel">R$</span><input type="text" id="valor" inputmode="decimal" value="1.500,00"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Alocação-alvo</h2></div>
+    <div class="alloc-card">
+      <div class="alloc-bar" id="allocBar"></div>
+      <div class="alloc-legend" id="allocLegend"></div>
+    </div>
+
+    <div class="funds">
+      <div class="funds-grid">
+        <div class="funds-head"><div>Classe</div><div>Exemplo de fundo/ETF</div><div style="justify-content:flex-end">%</div><div style="justify-content:flex-end">Aporte/mês</div></div>
+        <div id="fundRows"></div>
+      </div>
+    </div>
+
+    <div class="callout" id="rebalanceCallout"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Por que esse portfólio funciona</h2></div>
+    <div class="principles">
+      <div class="principle"><div class="principle-title">Simplicidade vence complexidade</div><div class="principle-txt">3-4 fundos bem escolhidos superam, na prática, carteiras com dezenas de ativos — menos custo, menos erro de comportamento.</div></div>
+      <div class="principle"><div class="principle-title">Custo é o único fator garantido</div><div class="principle-txt">Ninguém controla o retorno do mercado; todo mundo controla a taxa que paga. Priorize sempre o fundo de menor custo na categoria.</div></div>
+      <div class="principle"><div class="principle-title">Diversificação ampla</div><div class="principle-txt">Fundos de índice total, não apostas em setores ou países isolados.</div></div>
+      <div class="principle"><div class="principle-title">Não cronometrar o mercado</div><div class="principle-txt">Aporte automático e regular supera qualquer tentativa de comprar na baixa e vender na alta.</div></div>
+    </div>
+  </section>
+
+  <footer>
+    Alocação em ações = 120 − idade, ajustada por tolerância ao risco e horizonte de tempo, limitada entre 10% e 95%. Dentro de ações: 60% doméstico / 40% internacional. Exemplos de fundos são ilustrativos — confirme taxa de administração, disponibilidade e tributação atuais antes de investir. Isto não é recomendação de investimento personalizada. Metodologia completa em <span class="mono">docs/portfolio-passivo-bogleheads.md</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var idadeEl = document.getElementById('idade');
+  var paisEl = document.getElementById('pais');
+  var horizonteEl = document.getElementById('horizonte');
+  var riscoEl = document.getElementById('risco');
+  var valorEl = document.getElementById('valor');
+  var moedaLabel = document.getElementById('moedaLabel');
+  var allocBar = document.getElementById('allocBar');
+  var allocLegend = document.getElementById('allocLegend');
+  var fundRows = document.getElementById('fundRows');
+  var rebalanceCallout = document.getElementById('rebalanceCallout');
+
+  var FUNDS = {
+    BR: {
+      moeda: 'R$',
+      dom: { nome:'Ações Brasil', exemplo:'ETF de Ibovespa (ex.: BOVA11)' },
+      intl: { nome:'Ações internacional', exemplo:'ETF de S&P 500 ou MSCI World na B3 (ex.: IVVB11)' },
+      bond: { nome:'Renda fixa', exemplo:'Tesouro IPCA+ (longo prazo) e Tesouro Selic (liquidez)' }
+    },
+    US: {
+      moeda: '$',
+      dom: { nome:'US Total Stock Market', exemplo:'VTI' },
+      intl: { nome:'International Stock', exemplo:'VXUS' },
+      bond: { nome:'Total Bond Market', exemplo:'BND' }
+    },
+    OUTRO: {
+      moeda: '$',
+      dom: { nome:'Ações globais (núcleo)', exemplo:'Fundo de índice global de baixo custo na sua corretora' },
+      intl: { nome:'Ações globais (complemento)', exemplo:'VT (Vanguard Total World Stock) ou equivalente' },
+      bond: { nome:'Renda fixa', exemplo:'Título público ou fundo de renda fixa na moeda das suas despesas futuras' }
+    }
+  };
+
+  function parseNum(str){
+    var n = parseFloat(String(str).replace(/\./g,'').replace(',', '.'));
+    return isNaN(n) ? 0 : n;
+  }
+  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+  function fmt(n, moeda){
+    return moeda + ' ' + n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+  }
+
+  function update(){
+    var idade = clamp(parseNum(idadeEl.value), 0, 100);
+    var horizonte = Math.max(0, parseNum(horizonteEl.value));
+    var risco = riscoEl.value;
+    var valor = parseNum(valorEl.value);
+    var pais = FUNDS[paisEl.value];
+    moedaLabel.textContent = pais.moeda;
+
+    var base = 120 - idade;
+    var riskAdj = risco === 'conservador' ? -15 : (risco === 'arrojado' ? 10 : 0);
+    var horizAdj = horizonte < 5 ? -20 : (horizonte <= 10 ? -10 : 0);
+    var stockPct = clamp(base + riskAdj + horizAdj, 10, 95);
+    var bondPct = 100 - stockPct;
+    var domPct = stockPct * 0.6;
+    var intlPct = stockPct * 0.4;
+
+    var segs = [
+      { pct: domPct, color: 'var(--moss)', label: pais.dom.nome },
+      { pct: intlPct, color: 'color-mix(in srgb, var(--moss) 50%, var(--sky) 50%)', label: pais.intl.nome },
+      { pct: bondPct, color: 'var(--sky)', label: pais.bond.nome }
+    ];
+
+    allocBar.innerHTML = segs.map(function(s){
+      return '<div class="alloc-seg" style="width:' + s.pct + '%;background:' + s.color + '">' + (s.pct >= 8 ? Math.round(s.pct) + '%' : '') + '</div>';
+    }).join('');
+
+    allocLegend.innerHTML = segs.map(function(s){
+      return '<div class="alloc-legend-item"><span class="alloc-dot" style="background:' + s.color + '"></span>' +
+        '<span class="alloc-legend-txt"><b>' + Math.round(s.pct) + '% — ' + s.label + '</b></span></div>';
+    }).join('');
+
+    var rows = [
+      { classe: pais.dom.nome, exemplo: pais.dom.exemplo, pct: domPct, color:'var(--moss)' },
+      { classe: pais.intl.nome, exemplo: pais.intl.exemplo, pct: intlPct, color:'color-mix(in srgb, var(--moss) 50%, var(--sky) 50%)' },
+      { classe: pais.bond.nome, exemplo: pais.bond.exemplo, pct: bondPct, color:'var(--sky)' }
+    ];
+
+    fundRows.innerHTML = rows.map(function(r){
+      return '<div class="fund-row">' +
+        '<div class="classe" style="color:' + r.color + '">' + r.classe + '</div>' +
+        '<div class="exemplo">' + r.exemplo + '</div>' +
+        '<div class="pct">' + Math.round(r.pct) + '%</div>' +
+        '<div class="valor">' + fmt(valor * r.pct/100, pais.moeda) + '</div>' +
+      '</div>';
+    }).join('');
+
+    rebalanceCallout.innerHTML = '<b>Rebalanceamento:</b> revise uma vez por ano, ou quando algum ativo se desviar mais de 5 pontos percentuais da meta — ajuste pelo fluxo de aportes antes de considerar vender.';
+  }
+
+  [idadeEl, paisEl, horizonteEl, riscoEl, valorEl].forEach(function(el){
+    el.addEventListener('input', update);
+    el.addEventListener('change', update);
+  });
+
+  update();
+})();
+</script>
