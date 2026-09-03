@@ -1,0 +1,359 @@
+<title>Sistema Financeiro Flexível</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,560;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#f5f3ea;
+    --surface:#fffdf6;
+    --ink:#1c2a23;
+    --ink-soft:#5a6a62;
+    --line:#ddd5be;
+    --focus:#3f6b53;
+
+    --moss:#2f5b45; --moss-bg:#e3ebe3;
+    --sky:#2f6579;  --sky-bg:#e1ebee;
+    --rose:#9c4a41; --rose-bg:#f2e2de;
+    --gold:#a8741f; --gold-bg:#f4e7c9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+      --moss:#7cbf9c; --moss-bg:#20362b;
+      --sky:#7cb7cc;  --sky-bg:#1c3038;
+      --rose:#e2a49a; --rose-bg:#3a2622;
+      --gold:#e3b45c; --gold-bg:#3a2f15;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+    --moss:#7cbf9c; --moss-bg:#20362b;
+    --sky:#7cb7cc;  --sky-bg:#1c3038;
+    --rose:#e2a49a; --rose-bg:#3a2622;
+    --gold:#e3b45c; --gold-bg:#3a2f15;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"Work Sans",system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--gold-bg); }
+  a{ color:inherit; }
+  .wrap{ max-width:920px; margin:0 auto; padding:56px 24px 96px; }
+
+  h1,h2,h3{ font-family:"Fraunces",Georgia,serif; font-weight:650; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",monospace; font-variant-numeric:tabular-nums; }
+
+  header.hero{ border-bottom:1px solid var(--line); padding-bottom:36px; margin-bottom:40px; }
+  .eyebrow{
+    font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--moss);
+    font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--moss); display:inline-block; }
+  h1{ font-size:clamp(30px,4.4vw,44px); line-height:1.08; letter-spacing:-.01em; }
+  .lede{ font-size:16.5px; line-height:1.6; color:var(--ink-soft); max-width:60ch; margin-top:16px; }
+
+  .income-row{
+    margin-top:28px; display:flex; align-items:flex-end; gap:20px; flex-wrap:wrap;
+  }
+  .income-field label{ display:block; font-size:12.5px; color:var(--ink-soft); margin-bottom:6px; }
+  .income-input-shell{
+    display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink);
+    padding-bottom:4px;
+  }
+  .income-input-shell span{ font-family:"IBM Plex Mono",monospace; font-size:20px; color:var(--ink-soft); }
+  #income{
+    font-family:"IBM Plex Mono",monospace; font-size:30px; font-weight:600; color:var(--ink);
+    background:transparent; border:none; outline:none; width:220px; padding:0;
+  }
+  .example-tag{
+    font-size:12px; color:var(--ink-soft); align-self:center; padding-bottom:6px;
+  }
+  .guiltfree-callout{
+    background:var(--gold-bg); border:1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+    border-radius:3px; padding:14px 18px; margin-top:24px; display:flex; align-items:baseline;
+    gap:12px; flex-wrap:wrap;
+  }
+  .guiltfree-callout .amt{ font-size:22px; font-weight:600; color:var(--gold); }
+  .guiltfree-callout .txt{ font-size:14px; color:var(--ink-soft); }
+
+  section{ margin-top:52px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:22px; }
+  .section-head h2{ font-size:22px; }
+  .section-note{ font-size:13px; color:var(--ink-soft); max-width:34ch; text-align:right; }
+
+  .buckets{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  @media (max-width:640px){ .buckets{ grid-template-columns:1fr; } }
+  .bucket{
+    background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:20px 22px;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .bucket[data-b="sem_culpa"]{ grid-column:1 / -1; }
+  .bucket-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .bucket-name{ font-family:"Fraunces",serif; font-size:19px; font-weight:650; }
+  .bucket-tag{ font-size:11.5px; letter-spacing:.03em; color:var(--ink-soft); margin-top:3px; }
+  .bucket-amt{ font-size:26px; font-weight:600; white-space:nowrap; }
+
+  .slider-row{ display:flex; align-items:center; gap:12px; }
+  input[type="range"]{
+    -webkit-appearance:none; appearance:none; flex:1; height:4px; border-radius:2px;
+    background:var(--line); outline:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:16px; height:16px; border-radius:50%;
+    background:var(--accent, var(--moss)); border:2px solid var(--surface);
+    box-shadow:0 0 0 1px var(--accent, var(--moss)); cursor:pointer;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:16px; height:16px; border-radius:50%; background:var(--accent, var(--moss));
+    border:2px solid var(--surface); box-shadow:0 0 0 1px var(--accent, var(--moss)); cursor:pointer;
+  }
+  input[type="range"]:focus-visible{ outline:2px solid var(--focus); outline-offset:4px; }
+  .pct{ font-family:"IBM Plex Mono",monospace; font-size:14px; width:42px; text-align:right; }
+
+  .tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .tag{
+    font-size:12px; padding:4px 9px; border-radius:20px; background:var(--bg, var(--moss-bg));
+    color:var(--fg, var(--moss)); font-weight:500;
+  }
+  .bucket-rationale{ font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0; }
+
+  .sum-flag{ font-size:12.5px; color:var(--ink-soft); margin-top:14px; text-align:right; }
+  .sum-flag.off{ color:var(--rose); }
+
+  ol.automation{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
+  ol.automation li{
+    display:grid; grid-template-columns:28px 108px 1fr auto; gap:16px; align-items:baseline;
+    padding:15px 0; border-bottom:1px solid var(--line);
+  }
+  @media (max-width:640px){
+    ol.automation li{ grid-template-columns:24px 1fr; }
+    ol.automation li .step-day, ol.automation li .step-amt{ grid-column:2; }
+  }
+  .step-n{ font-family:"IBM Plex Mono",monospace; color:var(--ink-soft); font-size:13px; }
+  .step-day{ font-size:12.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; }
+  .step-txt{ font-size:14.5px; }
+  .step-amt{ font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:600; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Sistema financeiro flexível</div>
+    <h1>Dinheiro que se organiza sozinho — sem parecer uma prisão.</h1>
+    <p class="lede">Em vez de 14 categorias com limite, a renda se divide em 4 baldes largos e automáticos. O que muda entre um mês apertado e um mês tranquilo não é o quanto você controla — é a ordem em que o dinheiro se move.</p>
+
+    <div class="income-row">
+      <div class="income-field">
+        <label for="income">Renda líquida mensal</label>
+        <div class="income-input-shell">
+          <span>R$</span>
+          <input id="income" inputmode="decimal" value="6.500,00">
+        </div>
+      </div>
+      <span class="example-tag">valor de exemplo — ajuste para o seu</span>
+    </div>
+
+    <div class="guiltfree-callout">
+      <span class="amt mono" id="guiltfreeHeroAmt">R$ 1.625,00</span>
+      <span class="txt">é seu fundo <strong>sem culpa</strong> este mês. Gasta-se sem categorizar, sem justificar e sem revisar.</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <h2>Os 4 baldes</h2>
+      <div class="section-note">Arraste para redistribuir. A soma sempre volta a 100%.</div>
+    </div>
+
+    <div class="buckets" id="buckets"></div>
+    <div class="sum-flag" id="sumFlag">soma: 100%</div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Regras de automação</h2>
+      <div class="section-note">A ordem é a parte que não muda.</div>
+    </div>
+    <ol class="automation" id="automation"></ol>
+  </section>
+
+  <footer>
+    Faixas de referência, não limites rígidos — mova os controles acima para o seu contexto. Regra de aumento de renda: todo reajuste ou bônus destina automaticamente metade do valor extra para "pague-se primeiro" antes de qualquer ajuste no padrão de vida. Modelo completo em <span class="mono">docs/sistema-financeiro-flexivel.md</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+
+  var BUCKETS = [
+    {
+      id:'fixos_essenciais', nome:'Fixos essenciais', pct:50, accent:'--sky', bg:'--sky-bg',
+      categorias:['Moradia','Contas da casa','Alimentação','Transporte','Saúde','Seguro','Financeiro'],
+      rationale:'Débito automático ou boleto agendado. Nenhuma ação manual mensal.'
+    },
+    {
+      id:'pague_se_primeiro', nome:'Pague-se primeiro', pct:15, accent:'--moss', bg:'--moss-bg',
+      categorias:['Investimentos'],
+      rationale:'Sai da conta no dia do pagamento, antes de qualquer despesa.'
+    },
+    {
+      id:'familia_pessoas', nome:'Família & pessoas', pct:10, accent:'--rose', bg:'--rose-bg',
+      categorias:['Família / filhos','Pessoas'],
+      rationale:'Envelope dedicado, separado do fundo sem culpa.'
+    },
+    {
+      id:'sem_culpa', nome:'Sem culpa', pct:25, accent:'--gold', bg:'--gold-bg',
+      categorias:['Restaurante e delivery','Lazer','Pessoal','Extras'],
+      rationale:'Gasto livre. Se acabar antes do mês virar, a resposta é esperar — não é motivo para abandonar o sistema.'
+    }
+  ];
+
+  var AUTOMATION = [
+    { dia:'Dia 0', bucketId:'pague_se_primeiro', txt:'Transferência automática para investimentos' },
+    { dia:'Dia 0–1', bucketId:'fixos_essenciais', txt:'Débito automático dos fixos essenciais' },
+    { dia:'Dia 1', bucketId:'sem_culpa', txt:'Transferência para a conta/cartão sem culpa' },
+    { dia:'Dia 1', bucketId:'familia_pessoas', txt:'Transferência para o envelope de família & pessoas' },
+    { dia:'Mensal', bucketId:null, txt:'Revisão de 5 min: só confirmar que as automações rodaram' }
+  ];
+
+  var bucketsEl = document.getElementById('buckets');
+  var automationEl = document.getElementById('automation');
+  var incomeInput = document.getElementById('income');
+  var sumFlag = document.getElementById('sumFlag');
+  var guiltfreeHero = document.getElementById('guiltfreeHeroAmt');
+
+  function parseIncome(str){
+    var n = parseFloat(String(str).replace(/\./g,'').replace(',', '.'));
+    return isNaN(n) || n < 0 ? 0 : n;
+  }
+  function getIncome(){ return parseIncome(incomeInput.value); }
+
+  function byId(id){ return BUCKETS.filter(function(b){ return b.id === id; })[0]; }
+
+  function renderBuckets(){
+    bucketsEl.innerHTML = '';
+    BUCKETS.forEach(function(b){
+      var el = document.createElement('div');
+      el.className = 'bucket';
+      el.dataset.b = b.id;
+      el.style.setProperty('--accent', 'var(' + b.accent + ')');
+
+      var tagsHtml = b.categorias.map(function(c){
+        return '<span class="tag" style="--bg:var(' + b.bg + ');--fg:var(' + b.accent + ')">' + c + '</span>';
+      }).join('');
+
+      el.innerHTML =
+        '<div class="bucket-top">' +
+          '<div><div class="bucket-name">' + b.nome + '</div>' +
+          '<div class="bucket-tag">' + b.categorias.length + ' categorias</div></div>' +
+          '<div class="bucket-amt mono" data-amt style="color:var(' + b.accent + ')"></div>' +
+        '</div>' +
+        '<div class="slider-row">' +
+          '<input type="range" min="0" max="100" step="1" value="' + b.pct + '" data-slider aria-label="Percentual de ' + b.nome + '">' +
+          '<span class="pct mono" data-pct>' + b.pct + '%</span>' +
+        '</div>' +
+        '<div class="tags">' + tagsHtml + '</div>' +
+        '<p class="bucket-rationale">' + b.rationale + '</p>';
+
+      bucketsEl.appendChild(el);
+    });
+  }
+
+  function renderAutomation(){
+    automationEl.innerHTML = '';
+    AUTOMATION.forEach(function(step, i){
+      var li = document.createElement('li');
+      var amtHtml = '';
+      if (step.bucketId){
+        var b = byId(step.bucketId);
+        amtHtml = '<span class="step-amt" data-auto-amt="' + step.bucketId + '" style="color:var(' + b.accent + ')"></span>';
+      } else {
+        amtHtml = '<span class="step-amt" style="color:var(--ink-soft)">—</span>';
+      }
+      li.innerHTML =
+        '<span class="step-n mono">' + (i + 1).toString().padStart(2,'0') + '</span>' +
+        '<span class="step-day">' + step.dia + '</span>' +
+        '<span class="step-txt">' + step.txt + '</span>' +
+        amtHtml;
+      automationEl.appendChild(li);
+    });
+  }
+
+  function redistribute(changedId, newVal){
+    var changed = byId(changedId);
+    var others = BUCKETS.filter(function(b){ return b.id !== changedId; });
+    var oldVal = changed.pct;
+    changed.pct = newVal;
+    var delta = newVal - oldVal;
+    var othersTotal = others.reduce(function(s,b){ return s + b.pct; }, 0);
+
+    if (othersTotal <= 0){
+      var share = -delta / others.length;
+      others.forEach(function(b){ b.pct = Math.max(0, b.pct + share); });
+    } else {
+      others.forEach(function(b){
+        var portion = b.pct / othersTotal;
+        b.pct = Math.max(0, b.pct - delta * portion);
+      });
+    }
+
+    var total = BUCKETS.reduce(function(s,b){ return s + b.pct; }, 0);
+    var fix = 100 - total;
+    others[others.length - 1].pct = Math.max(0, others[others.length - 1].pct + fix);
+  }
+
+  function update(){
+    var income = getIncome();
+    var total = 0;
+
+    BUCKETS.forEach(function(b){
+      total += b.pct;
+      var el = bucketsEl.querySelector('[data-b="' + b.id + '"]');
+      if (!el) return;
+      var slider = el.querySelector('[data-slider]');
+      var pctEl = el.querySelector('[data-pct]');
+      var amtEl = el.querySelector('[data-amt]');
+      if (document.activeElement !== slider) slider.value = Math.round(b.pct);
+      pctEl.textContent = Math.round(b.pct) + '%';
+      amtEl.textContent = BRL.format(income * b.pct / 100);
+    });
+
+    sumFlag.textContent = 'soma: ' + Math.round(total) + '%';
+    sumFlag.classList.toggle('off', Math.round(total) !== 100);
+
+    var semCulpa = byId('sem_culpa');
+    guiltfreeHero.textContent = BRL.format(income * semCulpa.pct / 100);
+
+    AUTOMATION.forEach(function(step){
+      if (!step.bucketId) return;
+      var target = automationEl.querySelector('[data-auto-amt="' + step.bucketId + '"]');
+      if (target) target.textContent = BRL.format(income * byId(step.bucketId).pct / 100);
+    });
+  }
+
+  bucketsEl.addEventListener('input', function(e){
+    if (e.target.matches('[data-slider]')){
+      var id = e.target.closest('.bucket').dataset.b;
+      redistribute(id, parseFloat(e.target.value));
+      update();
+    }
+  });
+
+  incomeInput.addEventListener('input', update);
+  incomeInput.addEventListener('blur', function(){
+    incomeInput.value = getIncome().toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+    update();
+  });
+
+  renderBuckets();
+  renderAutomation();
+  update();
+})();
+</script>

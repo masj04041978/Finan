@@ -1,0 +1,64 @@
+{
+  "descricao": "Modelo de dados do Sistema Financeiro Flexível: agrupa as categorias de despesa em 4 baldes com faixas percentuais de referência (não rígidas) e regras de automação em ordem de execução.",
+  "moeda": "BRL",
+  "baldes": [
+    {
+      "id": "fixos_essenciais",
+      "nome": "Fixos essenciais",
+      "faixa_sugerida": { "min": 45, "max": 55 },
+      "padrao": 50,
+      "descricao": "Contas que existem independente de decisão mensal. Automatizadas via débito ou boleto agendado.",
+      "categorias": [
+        "moradia",
+        "contas_da_casa",
+        "alimentacao",
+        "transporte",
+        "saude",
+        "seguro",
+        "financeiro"
+      ]
+    },
+    {
+      "id": "pague_se_primeiro",
+      "nome": "Pague-se primeiro",
+      "faixa_sugerida": { "min": 15, "max": 20 },
+      "padrao": 15,
+      "descricao": "Transferido automaticamente no dia do pagamento, antes de qualquer despesa. Captura metade de todo aumento de renda antes que o padrão de vida se ajuste.",
+      "categorias": [
+        "investimentos"
+      ]
+    },
+    {
+      "id": "familia_pessoas",
+      "nome": "Família & pessoas",
+      "faixa_sugerida": { "min": 8, "max": 12 },
+      "padrao": 10,
+      "descricao": "Envelope dedicado para filhos, família e apoio a terceiros, separado do fundo sem culpa.",
+      "categorias": [
+        "familia_filhos",
+        "pessoas"
+      ]
+    },
+    {
+      "id": "sem_culpa",
+      "nome": "Sem culpa",
+      "faixa_sugerida": { "min": 20, "max": 30 },
+      "padrao": 25,
+      "descricao": "Gasto livre, sem categorização ou justificativa interna. Reduz o gasto por compensação que a restrição excessiva costuma gerar.",
+      "categorias": [
+        "restaurante_delivery",
+        "lazer",
+        "pessoal",
+        "extras"
+      ]
+    }
+  ],
+  "automacao": [
+    { "ordem": 1, "dia": "dia do pagamento", "acao": "Transferência automática para investimentos", "balde": "pague_se_primeiro" },
+    { "ordem": 2, "dia": "dia do pagamento a +1", "acao": "Débito automático / boleto agendado dos fixos essenciais", "balde": "fixos_essenciais" },
+    { "ordem": 3, "dia": "dia do pagamento +1", "acao": "Transferência automática para conta/cartão do fundo sem culpa", "balde": "sem_culpa" },
+    { "ordem": 4, "dia": "dia do pagamento +1", "acao": "Transferência automática para envelope de família & pessoas", "balde": "familia_pessoas" },
+    { "ordem": 5, "dia": "uma vez por mês", "acao": "Revisão leve de 5 minutos: confirmar que as automações rodaram, sem revisar gasto por gasto", "balde": null }
+  ],
+  "regra_aumento_renda": "Todo aumento de renda direciona automaticamente metade do valor extra para o balde pague_se_primeiro antes de qualquer ajuste no padrão de vida."
+}
