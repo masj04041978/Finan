@@ -203,6 +203,7 @@
       <button class="tab-btn" data-tab="cfo"><span class="tn mono">08</span>CFO pessoal</button>
       <button class="tab-btn" data-tab="redesenho"><span class="tn mono">09</span>Redesenho</button>
       <button class="tab-btn" data-tab="historico"><span class="tn mono">10</span>Histórico</button>
+      <button class="tab-btn" data-tab="estrategia"><span class="tn mono">11</span>Estratégia</button>
     </nav>
     <div class="sidebar-foot">Tudo salvo apenas no seu navegador (local, privado). Nenhum dado sai daqui.</div>
   </aside>
@@ -666,6 +667,38 @@
       <footer class="note">Detecção: descrições idênticas que se repetem a cada ~20-45 dias viram "recorrente"; entre elas, valor médio até R$ 15 vira vazamento, valor final 15%+ acima do inicial vira aumento de padrão, o resto vira assinatura. Ocorrência única acima de R$ 150 em categoria discricionária vira compra por impulso. Só categorias discricionárias e Financeiro entram nessa análise — fixos essenciais (moradia, contas, alimentação etc.) ficam de fora.</footer>
     </section>
 
+    <!-- ============ 11 ESTRATÉGIA ============ -->
+    <section class="panel" id="panel-estrategia">
+      <div class="panel-head">
+        <div class="eyebrow" style="color:var(--rose)"><span style="background:var(--rose)"></span>11 · Estratégia inteligente de dívidas</div>
+        <h1>Uma estratégia só, com a lógica exposta — não um menu de métodos.</h1>
+        <p class="lede">Reaproveita suas dívidas do módulo 02, seu fluxo de caixa do Perfil, sua reserva do módulo 03 e o retorno esperado do módulo 07 para decidir, passo a passo, o caminho mais eficiente.</p>
+      </div>
+
+      <section class="block">
+        <div class="block-head"><h2 style="color:var(--sky)">Passo 1 · Colchão mínimo antes de acelerar</h2></div>
+        <div class="card" id="estColchao"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2 style="color:var(--gold)">Passo 2 · Quitar agora ou manter e investir, dívida por dívida</h2></div>
+        <div class="card" id="estComparacao"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2 style="color:var(--moss)">Passo 3 · Ordem de ataque e resultado</h2></div>
+        <div class="cards3" id="estResultado"></div>
+        <div class="block-note" id="estOrdem" style="margin-top:10px;"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2 style="color:var(--rose)">Passo 4 · Onde entra seu objetivo</h2></div>
+        <div class="card" id="estObjetivo"></div>
+      </section>
+
+      <footer class="note">Regra de quitar × investir: uma dívida vale mais quitar antecipadamente do que investir a diferença sempre que sua taxa mensal supera 1,5× o retorno líquido mensal equivalente do módulo 07 · Futuro — quitar é retorno garantido, investir não é. Simulação usa a mesma engine do módulo 02 · Dívidas.</footer>
+    </section>
+
   </main>
 </div>
 
@@ -766,6 +799,7 @@
     if (name === 'cfo') updateCfo();
     if (name === 'redesenho') updateRedesenho();
     if (name === 'historico') updateHistorico();
+    if (name === 'estrategia') updateEstrategia();
   }
   activateTab('perfil');
 
@@ -1729,6 +1763,72 @@
       '</div>';
   }
 
+  /* ================= 11 ESTRATÉGIA ================= */
+  function updateEstrategia(){
+    var debts = S.dividas.debts;
+    var despesas = S.perfil.despesas;
+    var poupancaLiquida = S.perfil.poupancaLiquida;
+    var colchaoInicial = Math.max(despesas, 1000);
+    var faltaColchao = Math.max(0, colchaoInicial - poupancaLiquida);
+
+    var colchaoEl = document.getElementById('estColchao');
+    if (faltaColchao > 0){
+      colchaoEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--sky)"></span><div><div class="finding-title">Faltam ' + BRL.format(faltaColchao) + ' para o colchão mínimo</div><div class="finding-txt">Colchão de referência: ' + BRL.format(colchaoInicial) + ' (1 mês de despesas ou R$ 1.000, o maior). Reserve isso antes de acelerar dívida — sem ele, qualquer imprevisto vira dívida nova e anula o progresso.</div></div></div>';
+    } else {
+      colchaoEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--moss)"></span><div><div class="finding-title">Colchão mínimo garantido</div><div class="finding-txt">Você já tem ' + BRL.format(poupancaLiquida) + ' — acima do colchão de referência de ' + BRL.format(colchaoInicial) + '. Pode direcionar 100% do fluxo de caixa disponível para dívida.</div></div></div>';
+    }
+
+    var retornoLiquidoAnual = S.simulador.retorno - S.simulador.custo;
+    var investMonthly = (Math.pow(1+retornoLiquidoAnual/100, 1/12)-1)*100;
+    var limiar = investMonthly * 1.5;
+
+    var quitarAgora = [], manterInvestir = [];
+    var compHtml = debts.map(function(d){
+      var quitar = d.taxa > limiar;
+      if (quitar) quitarAgora.push(d); else manterInvestir.push(d);
+      var color = quitar ? 'var(--rose)' : 'var(--moss)';
+      var bg = quitar ? 'var(--rose-bg)' : 'var(--moss-bg)';
+      var label = quitar ? 'quitar agora' : 'manter e investir';
+      return '<div class="finding"><span class="finding-dot" style="background:' + color + '"></span><div><div class="finding-title">' + d.nome + ' <span class="rd-badge" style="background:' + bg + ';color:' + color + '">' + label + '</span></div><div class="finding-txt">taxa ' + d.taxa.toFixed(1).replace('.',',') + '% a.m. × retorno líquido de referência ' + investMonthly.toFixed(2).replace('.',',') + '% a.m. (limiar de 1,5×: ' + limiar.toFixed(2).replace('.',',') + '%)</div></div></div>';
+    }).join('');
+    document.getElementById('estComparacao').innerHTML = compHtml || '<div class="finding-ok">Nenhuma dívida cadastrada — adicione em 02 · Dívidas.</div>';
+
+    var extra = S.dividas.extra != null ? S.dividas.extra : capacidade();
+    var resultadoEl = document.getElementById('estResultado');
+    var ordemTxt = '';
+    var dataLivre = null;
+
+    if (quitarAgora.length){
+      var orderIds = order_avalanche(quitarAgora);
+      var r = simulateDebt(quitarAgora, extra, orderIds);
+      var orderNames = orderIds.map(function(id){ var d=quitarAgora.filter(function(x){ return x.id==id; })[0]; return d?d.nome:''; }).join(' → ');
+      resultadoEl.innerHTML =
+        '<div class="stat-card"><div class="sc-title" style="color:var(--moss)">Quitação prevista</div><div class="sc-amt mono">' + (r.quitado?fmtDate(r.dataQuitacao):'> 50 anos') + '</div></div>' +
+        '<div class="stat-card"><div class="sc-title" style="color:var(--moss)">Tempo</div><div class="sc-amt mono">' + r.months + ' meses</div></div>' +
+        '<div class="stat-card"><div class="sc-title" style="color:var(--rose)">Juros totais</div><div class="sc-amt mono" style="color:var(--rose)">' + BRL.format(r.totalJuros) + '</div></div>';
+      ordemTxt = 'ordem de ataque (maior taxa primeiro): ' + orderNames + ' · fluxo de caixa aplicado: ' + BRL.format(extra) + '/mês';
+      if (r.quitado) dataLivre = r.dataQuitacao;
+    } else {
+      resultadoEl.innerHTML = '<div class="stat-card" style="grid-column:1/-1;"><div class="sc-sub">Nenhuma dívida compensa quitação acelerada pela comparação de taxa — pague só os mínimos e direcione o fluxo de caixa para investimento/objetivo.</div></div>';
+    }
+    if (manterInvestir.length){
+      ordemTxt += (ordemTxt ? ' · ' : '') + 'mantidas no mínimo (taxa baixa, compensa investir): ' + manterInvestir.map(function(d){ return d.nome; }).join(', ');
+    }
+    document.getElementById('estOrdem').textContent = ordemTxt;
+
+    var meta = S.automacao.meta;
+    var objEl = document.getElementById('estObjetivo');
+    if (meta && meta.valor > 0){
+      if (dataLivre){
+        objEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">Meta "' + meta.nome + '" começa a receber aporte cheio após a quitação</div><div class="finding-txt">A partir de ' + fmtDate(dataLivre) + ', o fluxo de caixa hoje destinado à dívida cara (' + BRL.format(extra) + '/mês) libera para essa meta — atualize o valor em 06 · Automação quando chegar lá.</div></div></div>';
+      } else {
+        objEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">Meta "' + meta.nome + '" já pode receber aporte</div><div class="finding-txt">Como nenhuma dívida compensa quitação acelerada, direcione o fluxo de caixa disponível direto para essa meta em 06 · Automação.</div></div></div>';
+      }
+    } else {
+      objEl.innerHTML = '<div class="finding-ok">Nenhuma meta específica cadastrada ainda — defina uma em 06 · Automação para ela entrar automaticamente nesta estratégia assim que as dívidas caras forem quitadas.</div>';
+    }
+  }
+
   /* load module-specific text/select inputs from state */
   document.getElementById('divExtra').value = S.dividas.extra != null ? fmtInput(S.dividas.extra) : fmtInput(capacidade());
   document.getElementById('pfHorizonte').value = S.portfolio.horizonte;
@@ -1752,6 +1852,7 @@
     updateCfo();
     updateRedesenho();
     updateHistorico();
+    updateEstrategia();
   }
   updateAll();
 })();
