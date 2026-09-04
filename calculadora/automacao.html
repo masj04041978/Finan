@@ -55,6 +55,7 @@
 
   /* despesas table */
   .exp-grid{ display:grid; grid-template-columns:1.6fr 1fr 0.7fr 28px; border:1px solid var(--line); border-radius:4px; background:var(--surface); overflow:hidden; }
+  #expRows{ display:contents; }
   .exp-head > div, .exp-row > div{ padding:9px 12px; border-bottom:1px solid var(--line); display:flex; align-items:center; }
   .exp-head > div{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); }
   .exp-row:last-of-type > div{ border-bottom:none; }
@@ -83,6 +84,7 @@
   /* summary */
   .summary{ border:1px solid var(--line); border-radius:4px; background:var(--surface); overflow:hidden; margin-top:16px; }
   .sum-grid{ display:grid; grid-template-columns:1.4fr 1fr 0.7fr; }
+  #sumRows{ display:contents; }
   .sum-head > div, .sum-row > div{ padding:10px 14px; border-bottom:1px solid var(--line); display:flex; align-items:center; }
   .sum-head > div{ font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); }
   .sum-row:last-child > div{ border-bottom:none; }
