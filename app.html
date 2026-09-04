@@ -201,7 +201,7 @@
       <button class="tab-btn" data-tab="automacao"><span class="tn mono">06</span>Automação</button>
       <button class="tab-btn" data-tab="simulador"><span class="tn mono">07</span>Futuro</button>
       <button class="tab-btn" data-tab="cfo"><span class="tn mono">08</span>CFO pessoal</button>
-      <button class="tab-btn" data-tab="redesenho"><span class="tn mono">09</span>Redesenho</button>
+      <button class="tab-btn" data-tab="redesenho"><span class="tn mono">09</span>Despesas</button>
       <button class="tab-btn" data-tab="historico"><span class="tn mono">10</span>Histórico</button>
       <button class="tab-btn" data-tab="estrategia"><span class="tn mono">11</span>Estratégia</button>
     </nav>
@@ -454,26 +454,24 @@
       <div class="panel-head">
         <div class="eyebrow" style="color:var(--moss)"><span style="background:var(--moss)"></span>06 · Automação</div>
         <h1>O calendário do mês, com cada transferência no dia certo.</h1>
-        <p class="lede">Renda e dia do pagamento vêm do seu perfil.</p>
+        <p class="lede">Renda e dia do pagamento vêm do seu perfil; percentuais vêm do módulo 01; despesas fixas vêm do módulo 09.</p>
       </div>
 
       <section class="block">
         <div class="card">
-          <div class="field-grid cols2">
-            <div class="field"><label for="au_pctInvest">Pague-se primeiro</label><div class="input-shell"><input type="text" id="au_pctInvest" inputmode="decimal"><span>%</span></div></div>
-            <div class="field"><label for="au_pctSemCulpa">Fundo sem culpa</label><div class="input-shell"><input type="text" id="au_pctSemCulpa" inputmode="decimal" value="25"><span>%</span></div></div>
-          </div>
+          <div class="stat-row"><span class="stat-label">pague-se primeiro</span><span class="mono" id="auPctInvestDisplay" style="font-weight:600;color:var(--moss);"></span></div>
+          <div class="stat-row"><span class="stat-label">fundo sem culpa</span><span class="mono" id="auPctSemCulpaDisplay" style="font-weight:600;color:var(--gold);"></span></div>
+          <button class="sync-link" data-jump="orcamento" style="margin-top:10px;">ajustar percentuais em 01 · Orçamento</button>
         </div>
       </section>
 
       <section class="block">
-        <div class="block-head"><h2>Despesas fixas</h2></div>
-        <div class="elist">
-          <div class="elist-grid" style="grid-template-columns:1.6fr 1fr 0.7fr 26px;">
-            <div class="elist-head" style="display:contents;"><div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Despesa</div><div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Valor</div><div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Dia</div><div></div></div>
-            <div id="auExpRows" style="display:contents;"></div>
+        <div class="block-head"><h2>Despesas fixas</h2><button class="sync-link" data-jump="redesenho" style="margin-top:0;">editar em 09 · Despesas</button></div>
+        <div class="table">
+          <div class="table-grid" style="grid-template-columns:1.6fr 1fr 0.7fr;">
+            <div class="thead"><div>Despesa</div><div style="justify-content:flex-end">Valor</div><div style="justify-content:flex-end">Dia</div></div>
+            <div id="auFixosRows" style="display:contents;"></div>
           </div>
-          <div class="elist-foot"><button class="add-btn" id="auAddExp">+ adicionar despesa fixa</button></div>
         </div>
       </section>
 
@@ -583,21 +581,22 @@
     <!-- ============ 09 REDESENHO ============ -->
     <section class="panel" id="panel-redesenho">
       <div class="panel-head">
-        <div class="eyebrow" style="color:var(--gold)"><span style="background:var(--gold)"></span>09 · Redesenho de gastos</div>
-        <h1>Cada real com um propósito: o que cortar, o que manter, o que automatizar.</h1>
-        <p class="lede">Liste seus gastos linha por linha (não só o total). Cada um recebe um veredito, e o real vira o teste de verdade dos 4 baldes do orçamento.</p>
+        <div class="eyebrow" style="color:var(--gold)"><span style="background:var(--gold)"></span>09 · Despesas &amp; redesenho</div>
+        <h1>Cada real com um propósito — e a lista única que alimenta o app.</h1>
+        <p class="lede">Liste seus gastos linha por linha (não só o total). Cada um recebe um veredito, os essenciais com dia de vencimento alimentam o calendário do módulo 06, e o real vira o teste de verdade dos 4 baldes do orçamento.</p>
       </div>
 
       <section class="block">
         <div class="block-head"><h2>Seus gastos, linha por linha</h2><span class="block-note">valores de exemplo — edite com os seus</span></div>
         <div class="elist">
-          <div class="elist-grid" style="grid-template-columns:1.5fr 1.3fr 0.9fr 0.7fr 0.8fr 26px;">
+          <div class="elist-grid" style="grid-template-columns:1.3fr 1.2fr 0.8fr 0.55fr 0.6fr 0.6fr 26px;">
             <div class="elist-head" style="display:contents;">
               <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Gasto</div>
               <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Categoria</div>
               <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Valor</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Dia</div>
               <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Auto?</div>
-              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Assinatura?</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Assin.?</div>
               <div></div>
             </div>
             <div id="rdRows" style="display:contents;"></div>
@@ -621,7 +620,7 @@
         <div class="cards2" id="rdResumo"></div>
       </section>
 
-      <footer class="note">Regra de corte: entre itens marcados "assinatura", só a de maior valor é mantida — as demais são sinalizadas como corte. Os alvos de cada balde vêm dos percentuais definidos no módulo 01 · Orçamento flexível.</footer>
+      <footer class="note">Regra de corte: entre itens marcados "assinatura", só a de maior valor é mantida — as demais são sinalizadas como corte. Os alvos de cada balde vêm dos percentuais definidos no módulo 01 · Orçamento flexível. O dia de vencimento só é usado pelas categorias essenciais (fixos) — é o que aparece no calendário do módulo 06 · Automação.</footer>
     </section>
 
     <!-- ============ 10 HISTÓRICO ============ -->
@@ -722,31 +721,24 @@
     liberdade: { taxaRetirada:0.035 },
     portfolio: { horizonte:30, aporte:null },
     revisao: { entries:{}, draft:{} },
-    automacao: { pctInvest:null, pctSemCulpa:25,
-      despesas:[
-        { id:1, nome:'Moradia', valor:1800, dia:5 },
-        { id:2, nome:'Contas da casa', valor:450, dia:8 },
-        { id:3, nome:'Seguro', valor:180, dia:10 }
-      ], uid:4,
-      meta:{ nome:'', valor:0, guardado:0, data:'' }
-    },
+    automacao: { meta:{ nome:'', valor:0, guardado:0, data:'' } },
     simulador: { poupanca:null, crescAporte:3, retorno:6, custo:1, retiradaSegura:3.5, ajuste:400 },
     redesenho: { uid:16, items:[
-        { id:1,  nome:'Aluguel',                    categoria:'Moradia',              valor:1800, automatizado:true,  assinatura:false },
-        { id:2,  nome:'Água, luz e internet',        categoria:'Contas da casa',       valor:450,  automatizado:true,  assinatura:false },
-        { id:3,  nome:'Supermercado',                categoria:'Alimentação',          valor:900,  automatizado:false, assinatura:false },
-        { id:4,  nome:'Combustível/transporte',       categoria:'Transporte',           valor:350,  automatizado:false, assinatura:false },
-        { id:5,  nome:'Plano de saúde',               categoria:'Saúde',                valor:380,  automatizado:true,  assinatura:false },
-        { id:6,  nome:'Seguro do carro',              categoria:'Seguro',               valor:180,  automatizado:true,  assinatura:false },
-        { id:7,  nome:'Parcela de dívida',            categoria:'Financeiro',           valor:300,  automatizado:false, assinatura:false },
-        { id:8,  nome:'Aporte investimentos',         categoria:'Investimentos',        valor:600,  automatizado:false, assinatura:false },
-        { id:9,  nome:'Netflix',                      categoria:'Lazer',                valor:55,   automatizado:true,  assinatura:true },
-        { id:10, nome:'Disney+',                      categoria:'Lazer',                valor:40,   automatizado:true,  assinatura:true },
-        { id:11, nome:'HBO Max',                      categoria:'Lazer',                valor:35,   automatizado:true,  assinatura:true },
-        { id:12, nome:'Restaurante e delivery',       categoria:'Restaurante e delivery', valor:750, automatizado:false, assinatura:false },
-        { id:13, nome:'Compras/extras',               categoria:'Extras',               valor:350,  automatizado:false, assinatura:false },
-        { id:14, nome:'Academia',                     categoria:'Pessoal',              valor:130,  automatizado:true,  assinatura:false },
-        { id:15, nome:'Presente/apoio à família',      categoria:'Família/filhos',       valor:150,  automatizado:false, assinatura:false }
+        { id:1,  nome:'Aluguel',                    categoria:'Moradia',              valor:1800, dia:5,  automatizado:true,  assinatura:false },
+        { id:2,  nome:'Água, luz e internet',        categoria:'Contas da casa',       valor:450,  dia:8,  automatizado:true,  assinatura:false },
+        { id:3,  nome:'Supermercado',                categoria:'Alimentação',          valor:900,  dia:10, automatizado:false, assinatura:false },
+        { id:4,  nome:'Combustível/transporte',       categoria:'Transporte',           valor:350,  dia:15, automatizado:false, assinatura:false },
+        { id:5,  nome:'Plano de saúde',               categoria:'Saúde',                valor:380,  dia:10, automatizado:true,  assinatura:false },
+        { id:6,  nome:'Seguro do carro',              categoria:'Seguro',               valor:180,  dia:10, automatizado:true,  assinatura:false },
+        { id:7,  nome:'Parcela de dívida',            categoria:'Financeiro',           valor:300,  dia:12, automatizado:false, assinatura:false },
+        { id:8,  nome:'Aporte investimentos',         categoria:'Investimentos',        valor:600,  dia:5,  automatizado:false, assinatura:false },
+        { id:9,  nome:'Netflix',                      categoria:'Lazer',                valor:55,   dia:7,  automatizado:true,  assinatura:true },
+        { id:10, nome:'Disney+',                      categoria:'Lazer',                valor:40,   dia:7,  automatizado:true,  assinatura:true },
+        { id:11, nome:'HBO Max',                      categoria:'Lazer',                valor:35,   dia:7,  automatizado:true,  assinatura:true },
+        { id:12, nome:'Restaurante e delivery',       categoria:'Restaurante e delivery', valor:750, dia:1, automatizado:false, assinatura:false },
+        { id:13, nome:'Compras/extras',               categoria:'Extras',               valor:350,  dia:1,  automatizado:false, assinatura:false },
+        { id:14, nome:'Academia',                     categoria:'Pessoal',              valor:130,  dia:5,  automatizado:true,  assinatura:false },
+        { id:15, nome:'Presente/apoio à família',      categoria:'Família/filhos',       valor:150,  dia:1,  automatizado:false, assinatura:false }
       ] },
     historico: { uid:19, txs:[
         { id:1,  data:'2026-06-03', descricao:'Aluguel',               categoria:'Moradia',              valor:1800 },
@@ -786,6 +778,20 @@
 
   function capacidade(){ return S.perfil.renda - S.perfil.despesas; }
 
+  function calcReserva(){
+    var despesas = S.perfil.despesas, poupanca = S.perfil.poupancaLiquida;
+    var base = S.perfil.risco === 'conservador' ? 6 : (S.perfil.risco === 'agressivo' ? 12 : 9);
+    var meses = base + (S.perfil.autonomo?3:0) + (S.perfil.dependentes?2:0);
+    var alvoReserva = meses * despesas;
+    var colchaoInicial = Math.max(despesas, 1000);
+    return { base:base, meses:meses, alvoReserva:alvoReserva, colchaoInicial:colchaoInicial, poupanca:poupanca, faltaColchao: Math.max(0, colchaoInicial-poupanca) };
+  }
+
+  document.body.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-jump]'); if (!btn) return;
+    activateTab(btn.dataset.jump);
+  });
+
   /* ---------- tab navigation ---------- */
   var tabBtns = document.querySelectorAll('.tab-btn');
   tabBtns.forEach(function(btn){
@@ -796,6 +802,7 @@
     document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
     document.getElementById('panel-' + name).classList.add('active');
     document.querySelector('.tab-btn[data-tab="' + name + '"]').classList.add('active');
+    if (name === 'automacao') updateAutomacao();
     if (name === 'cfo') updateCfo();
     if (name === 'redesenho') updateRedesenho();
     if (name === 'historico') updateHistorico();
@@ -1053,10 +1060,9 @@
     paintLibRateToggle(match || libRateToggle.children[1]);
   })();
   function updateLiberdade(){
-    var despesas = S.perfil.despesas, poupanca = S.perfil.poupancaLiquida;
-    var base = S.perfil.risco === 'conservador' ? 6 : (S.perfil.risco === 'agressivo' ? 12 : 9);
-    var meses = base + (S.perfil.autonomo?3:0) + (S.perfil.dependentes?2:0);
-    var alvoReserva = meses * despesas;
+    var despesas = S.perfil.despesas;
+    var res = calcReserva();
+    var poupanca = res.poupanca, base = res.base, meses = res.meses, alvoReserva = res.alvoReserva;
     var cap = capacidade();
     document.getElementById('libMeses').textContent = meses + ' meses de despesas (base ' + base + ' + ajustes ' + (meses-base) + ')';
     document.getElementById('libAlvo').textContent = BRL.format(alvoReserva);
@@ -1226,49 +1232,12 @@
   });
 
   /* ================= 06 AUTOMAÇÃO ================= */
-  var auExpRowsEl = document.getElementById('auExpRows');
-  function renderAuExpRows(){
-    auExpRowsEl.innerHTML = '';
-    S.automacao.despesas.forEach(function(d){
-      var row = document.createElement('div');
-      row.style.display = 'contents';
-      row.innerHTML =
-        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="nome" data-id="'+d.id+'" value="'+d.nome+'"></div>' +
-        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="valor" data-id="'+d.id+'" inputmode="decimal" value="'+d.valor.toLocaleString('pt-BR')+'"></div>' +
-        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="dia" data-id="'+d.id+'" inputmode="numeric" value="'+d.dia+'"></div>' +
-        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><button class="rm-btn" data-rm="'+d.id+'">×</button></div>';
-      auExpRowsEl.appendChild(row);
-    });
-  }
-  auExpRowsEl.addEventListener('input', function(e){
-    var id = e.target.dataset.id; if (!id) return;
-    var d = S.automacao.despesas.filter(function(x){ return x.id==id; })[0]; if (!d) return;
-    var f = e.target.dataset.f;
-    if (f==='nome') d.nome=e.target.value;
-    else if (f==='valor') d.valor=parseNum(e.target.value);
-    else if (f==='dia') d.dia=parseNum(e.target.value);
-    saveState(); updateAutomacao();
-  });
-  auExpRowsEl.addEventListener('click', function(e){
-    var id = e.target.dataset.rm; if (!id) return;
-    S.automacao.despesas = S.automacao.despesas.filter(function(x){ return x.id!=id; });
-    renderAuExpRows(); saveState(); updateAutomacao();
-  });
-  document.getElementById('auAddExp').addEventListener('click', function(){
-    S.automacao.despesas.push({ id: S.automacao.uid++, nome:'Nova despesa', valor:100, dia:15 });
-    renderAuExpRows(); saveState(); updateAutomacao();
-  });
-
-  var auPctInvestEl = document.getElementById('au_pctInvest');
-  var auPctSemCulpaEl = document.getElementById('au_pctSemCulpa');
   var auMetaNomeEl = document.getElementById('au_metaNome');
   var auMetaValorEl = document.getElementById('au_metaValor');
   var auMetaGuardadoEl = document.getElementById('au_metaGuardado');
   var auMetaDataEl = document.getElementById('au_metaData');
-  [auPctInvestEl, auPctSemCulpaEl, auMetaNomeEl, auMetaValorEl, auMetaGuardadoEl, auMetaDataEl].forEach(function(el){
+  [auMetaNomeEl, auMetaValorEl, auMetaGuardadoEl, auMetaDataEl].forEach(function(el){
     el.addEventListener('input', function(){
-      S.automacao.pctInvest = parseNum(auPctInvestEl.value);
-      S.automacao.pctSemCulpa = parseNum(auPctSemCulpaEl.value);
       S.automacao.meta = { nome:auMetaNomeEl.value, valor:parseNum(auMetaValorEl.value), guardado:parseNum(auMetaGuardadoEl.value), data:auMetaDataEl.value };
       saveState(); updateAutomacao();
     });
@@ -1276,16 +1245,20 @@
 
   function monthsBetween(now, target){ return Math.max(0, (target.getFullYear()-now.getFullYear())*12 + (target.getMonth()-now.getMonth())); }
 
+  function despesasFixas(){ return S.redesenho.items.filter(function(it){ return CATEGORIA_BUCKET[it.categoria] === 'fixos'; }); }
+
   function updateAutomacao(){
     var renda = S.perfil.renda;
     var now = new Date();
     var daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
     var diaPag = clamp(S.perfil.diaPagamento, 1, daysInMonth);
     var diaPos = clamp(diaPag+1, 1, daysInMonth);
-    var pctInvest = S.automacao.pctInvest != null ? S.automacao.pctInvest : Math.round((capacidade()/Math.max(renda,1))*100);
-    if (document.activeElement !== auPctInvestEl) auPctInvestEl.value = pctInvest;
-    var pctSemCulpa = S.automacao.pctSemCulpa;
+    var pctInvest = S.orcamento.pcts.pague;
+    var pctSemCulpa = S.orcamento.pcts.semCulpa;
+    document.getElementById('auPctInvestDisplay').textContent = pctInvest.toFixed(0) + '%';
+    document.getElementById('auPctSemCulpaDisplay').textContent = pctSemCulpa.toFixed(0) + '%';
     var valInvest = renda*pctInvest/100, valSemCulpa = renda*pctSemCulpa/100;
+    var fixas = despesasFixas();
 
     var meta = S.automacao.meta;
     var metaAporte = 0;
@@ -1299,7 +1272,7 @@
     var events = {};
     function addEvent(dia, label, color){ dia = clamp(dia,1,daysInMonth); if (!events[dia]) events[dia]=[]; events[dia].push({label:label,color:color}); }
     addEvent(diaPag, 'Pague-se primeiro', 'var(--moss)');
-    S.automacao.despesas.forEach(function(d){ addEvent(d.dia, d.nome, 'var(--sky)'); });
+    fixas.forEach(function(d){ addEvent(d.dia, d.nome, 'var(--sky)'); });
     addEvent(diaPos, 'Sem culpa', 'var(--gold)');
     if (meta.valor>0) addEvent(diaPos, meta.nome||'Meta', 'color-mix(in srgb, var(--moss) 45%, var(--gold) 55%)');
 
@@ -1319,8 +1292,16 @@
       '<span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Sem culpa</span>' +
       (meta.valor>0 ? '<span class="legend-item"><span class="legend-dot" style="background:color-mix(in srgb, var(--moss) 45%, var(--gold) 55%)"></span>Meta</span>' : '');
 
+    document.getElementById('auFixosRows').innerHTML = fixas.length ? fixas.map(function(d){
+      return '<div style="display:contents;">' +
+        '<div style="padding:8px 12px;border-bottom:1px solid var(--line);">'+d.nome+'</div>' +
+        '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-family:IBM Plex Mono,monospace;text-align:right;">'+BRL.format(d.valor)+'</div>' +
+        '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-family:IBM Plex Mono,monospace;text-align:right;color:var(--ink-soft);">dia '+d.dia+'</div>' +
+      '</div>';
+    }).join('') : '<div class="table-empty" style="grid-column:1/-1;">nenhuma despesa fixa cadastrada — adicione em 09 · Despesas.</div>';
+
     var rows = [{ destino:'Pague-se primeiro', valor:valInvest, dia:diaPag, color:'var(--moss)' }];
-    S.automacao.despesas.forEach(function(d){ rows.push({ destino:d.nome, valor:d.valor, dia:d.dia, color:'var(--sky)' }); });
+    fixas.forEach(function(d){ rows.push({ destino:d.nome, valor:d.valor, dia:d.dia, color:'var(--sky)' }); });
     rows.push({ destino:'Fundo sem culpa', valor:valSemCulpa, dia:diaPos, color:'var(--gold)' });
     if (meta.valor>0) rows.push({ destino:'Meta: '+(meta.nome||'—'), valor:metaAporte, dia:diaPos, color:'color-mix(in srgb, var(--moss) 45%, var(--gold) 55%)' });
     document.getElementById('auSumRows').innerHTML = rows.map(function(r){
@@ -1331,7 +1312,6 @@
       '</div>';
     }).join('');
   }
-  renderAuExpRows();
   auMetaNomeEl.value = S.automacao.meta.nome; auMetaValorEl.value = fmtInput(S.automacao.meta.valor); auMetaGuardadoEl.value = fmtInput(S.automacao.meta.guardado); auMetaDataEl.value = S.automacao.meta.data;
 
   /* ================= 07 SIMULADOR ================= */
@@ -1408,20 +1388,14 @@
   function jumpBtn(tab, label){
     return '<button class="plan-jump" data-jump="'+tab+'">'+(label||'ir para o módulo →')+'</button>';
   }
-  document.getElementById('panel-cfo').addEventListener('click', function(e){
-    var btn = e.target.closest('[data-jump]'); if (!btn) return;
-    activateTab(btn.dataset.jump);
-  });
 
   function diagnosticar(){
     var renda = S.perfil.renda, despesas = S.perfil.despesas;
     var cap = capacidade();
     var taxaPoupanca = renda>0 ? (cap/renda)*100 : 0;
 
-    var baseMeses = S.perfil.risco==='conservador'?6:(S.perfil.risco==='agressivo'?12:9);
-    var meses = baseMeses + (S.perfil.autonomo?3:0) + (S.perfil.dependentes?2:0);
-    var alvoReserva = meses*despesas;
-    var colchaoInicial = Math.max(despesas, 1000);
+    var res = calcReserva();
+    var alvoReserva = res.alvoReserva, colchaoInicial = res.colchaoInicial;
     var reservaPct = alvoReserva>0 ? Math.min(999,(S.perfil.poupancaLiquida/alvoReserva)*100) : 100;
     var sobrandoAlemReserva = Math.max(0, S.perfil.poupancaLiquida - alvoReserva*1.2);
 
@@ -1430,7 +1404,6 @@
     var saldoCaro = dividasCaras.reduce(function(s,d){ return s+d.saldo; }, 0);
     var jurosMensalCaro = dividasCaras.reduce(function(s,d){ return s + d.saldo*(d.taxa/100); }, 0);
 
-    var pctInvestConfigurado = S.automacao.pctInvest != null && S.automacao.pctInvest > 0;
     var temMeta = S.automacao.meta && S.automacao.meta.valor > 0;
     var custoAlto = S.simulador.custo > 1.5;
     var custo20anos = 0;
@@ -1445,7 +1418,7 @@
 
     return { renda:renda, despesas:despesas, cap:cap, taxaPoupanca:taxaPoupanca, alvoReserva:alvoReserva, colchaoInicial:colchaoInicial,
       reservaPct:reservaPct, sobrandoAlemReserva:sobrandoAlemReserva, saldoCaro:saldoCaro, jurosMensalCaro:jurosMensalCaro,
-      dividasCaras:dividasCaras, pctInvestConfigurado:pctInvestConfigurado, temMeta:temMeta, custoAlto:custoAlto, custo20anos:custo20anos };
+      dividasCaras:dividasCaras, temMeta:temMeta, custoAlto:custoAlto, custo20anos:custo20anos };
   }
 
   function updateCfo(){
@@ -1471,24 +1444,22 @@
     var opp = [];
     if (d.sobrandoAlemReserva > 500) opp.push({ t:'Dinheiro parado além da reserva', x: BRL.format(d.sobrandoAlemReserva) + ' na poupança líquida além do que a reserva de emergência precisa — poderia estar investido rendendo mais.', jump:'liberdade' });
     if (!d.temMeta) opp.push({ t:'Nenhuma meta específica', x:'Sem meta com valor e prazo cadastrada em Automação — sem prazo definido, não vira aporte automático dedicado.', jump:'automacao' });
-    if (!d.pctInvestConfigurado) opp.push({ t:'Pague-se primeiro não automatizado', x:'O percentual de investimento automático não está configurado em Automação — cada mês depende de decisão manual.', jump:'automacao' });
     document.getElementById('cfoOportunidades').innerHTML = opp.length ? opp.map(function(v){
       return '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
     }).join('') : '<div class="finding-ok">Nenhuma oportunidade óbvia ficando parada.</div>';
 
     var err = [];
     if (d.cap<=0) err.push({ t:'Despesas maiores ou iguais à renda', x:'Não há capacidade de poupança neste momento — nenhum outro passo funciona até isso mudar.', jump:'orcamento' });
-    if (d.saldoCaro>0 && S.perfil.patrimonio>0) err.push({ t:'Investindo com dívida cara em aberto', x:'Você tem ' + BRL.format(d.saldoCaro) + ' em dívida acima de 8% a.m. e também tem investimentos — o juro da dívida quase certamente supera o retorno do investimento.', jump:'dividas' });
-    if (d.reservaPct<20 && d.saldoCaro===0 && d.pctInvestConfigurado) err.push({ t:'Investindo agressivamente sem reserva', x:'A reserva de emergência está em ' + Math.round(d.reservaPct) + '% — um imprevisto pode forçar venda de investimento ou nova dívida.', jump:'liberdade' });
+    if (d.saldoCaro>0 && S.perfil.patrimonio>0) err.push({ t:'Investindo com dívida cara em aberto', x:'Você tem ' + BRL.format(d.saldoCaro) + ' em dívida acima de 8% a.m. e também tem investimentos — o juro da dívida quase certamente supera o retorno do investimento.', jump:'estrategia' });
+    if (d.reservaPct<20 && d.saldoCaro===0) err.push({ t:'Investindo agressivamente sem reserva', x:'A reserva de emergência está em ' + Math.round(d.reservaPct) + '% — um imprevisto pode forçar venda de investimento ou nova dívida.', jump:'liberdade' });
     document.getElementById('cfoErros').innerHTML = err.length ? err.map(function(v){
       return '<div class="finding"><span class="finding-dot" style="background:var(--rose)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
     }).join('') : '<div class="finding-ok">Nenhum erro estrutural óbvio identificado.</div>';
 
     var plano = [];
     if (d.cap<=0) plano.push({ t:'Corte despesas antes de qualquer outra coisa', x:'Sem capacidade de poupança, nenhum dos outros passos tem com o que trabalhar.', jump:'orcamento' });
-    if (d.saldoCaro > d.colchaoInicial*0.5) plano.push({ t:'Quite as dívidas de juros altos', x:'Nenhum investimento seguro paga o que essas dívidas cobram — priorize ' + d.dividasCaras.map(function(x){return x.nome;}).join(', ') + '.', jump:'dividas' });
+    if (d.saldoCaro > d.colchaoInicial*0.5) plano.push({ t:'Quite as dívidas de juros altos', x:'Nenhum investimento seguro paga o que essas dívidas cobram — priorize ' + d.dividasCaras.map(function(x){return x.nome;}).join(', ') + '.', jump:'estrategia' });
     if (d.reservaPct < 100) plano.push({ t:'Complete a reserva de emergência', x:'Está em ' + Math.round(d.reservaPct) + '% de ' + BRL.format(d.alvoReserva) + ' — prioridade antes de investir mais agressivamente.', jump:'liberdade' });
-    if (!d.pctInvestConfigurado) plano.push({ t:'Automatize o pague-se primeiro', x:'Configure a transferência automática de investimento no dia do pagamento.', jump:'automacao' });
     if (!d.temMeta) plano.push({ t:'Defina uma meta específica com prazo', x:'Um valor e uma data transformam poupança genérica em aporte dedicado.', jump:'automacao' });
     if (d.custoAlto) plano.push({ t:'Reduza o custo dos seus fundos', x:BRL.format(d.custo20anos) + ' em 20 anos é o preço de manter um fundo caro — troque por um de índice de baixo custo equivalente.', jump:'simulador' });
     if (!plano.length) plano.push({ t:'Sua base está sólida', x:'Continue o ritual mensal de revisão e direcione todo aumento de renda primeiro para a taxa de poupança.', jump:'revisao' });
@@ -1514,6 +1485,7 @@
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="nome" data-id="'+it.id+'" value="'+it.nome+'"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><select class="rd-sel" data-f="categoria" data-id="'+it.id+'">'+options+'</select></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="valor" data-id="'+it.id+'" inputmode="decimal" value="'+it.valor.toLocaleString('pt-BR')+'"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="dia" data-id="'+it.id+'" inputmode="numeric" value="'+(it.dia||1)+'"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;"><input type="checkbox" class="rd-check" data-f="automatizado" data-id="'+it.id+'" '+(it.automatizado?'checked':'')+'></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;"><input type="checkbox" class="rd-check" data-f="assinatura" data-id="'+it.id+'" '+(it.assinatura?'checked':'')+'></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><button class="rm-btn" data-rm="'+it.id+'">×</button></div>';
@@ -1527,6 +1499,7 @@
     if (f==='nome') it.nome = e.target.value;
     else if (f==='categoria') it.categoria = e.target.value;
     else if (f==='valor') it.valor = parseNum(e.target.value);
+    else if (f==='dia') it.dia = clamp(parseNum(e.target.value) || 1, 1, 31);
     else if (f==='automatizado') it.automatizado = e.target.checked;
     else if (f==='assinatura') it.assinatura = e.target.checked;
     else return;
@@ -1540,7 +1513,7 @@
     renderRdRows(); saveState(); updateRedesenho();
   });
   document.getElementById('rdAdd').addEventListener('click', function(){
-    S.redesenho.items.push({ id: S.redesenho.uid++, nome:'Novo gasto', categoria:CATEGORIAS_ALL[0], valor:100, automatizado:false, assinatura:false });
+    S.redesenho.items.push({ id: S.redesenho.uid++, nome:'Novo gasto', categoria:CATEGORIAS_ALL[0], valor:100, dia:1, automatizado:false, assinatura:false });
     renderRdRows(); saveState(); updateRedesenho();
   });
   renderRdRows();
@@ -1766,10 +1739,8 @@
   /* ================= 11 ESTRATÉGIA ================= */
   function updateEstrategia(){
     var debts = S.dividas.debts;
-    var despesas = S.perfil.despesas;
-    var poupancaLiquida = S.perfil.poupancaLiquida;
-    var colchaoInicial = Math.max(despesas, 1000);
-    var faltaColchao = Math.max(0, colchaoInicial - poupancaLiquida);
+    var res = calcReserva();
+    var poupancaLiquida = res.poupanca, colchaoInicial = res.colchaoInicial, faltaColchao = res.faltaColchao;
 
     var colchaoEl = document.getElementById('estColchao');
     if (faltaColchao > 0){
@@ -1833,7 +1804,6 @@
   document.getElementById('divExtra').value = S.dividas.extra != null ? fmtInput(S.dividas.extra) : fmtInput(capacidade());
   document.getElementById('pfHorizonte').value = S.portfolio.horizonte;
   document.getElementById('pfValor').value = S.portfolio.aporte != null ? fmtInput(S.portfolio.aporte) : fmtInput(capacidade());
-  document.getElementById('au_pctSemCulpa').value = S.automacao.pctSemCulpa;
   document.getElementById('sf_crescAporte').value = S.simulador.crescAporte;
   document.getElementById('sf_retorno').value = S.simulador.retorno;
   document.getElementById('sf_custo').value = S.simulador.custo;
