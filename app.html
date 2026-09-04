@@ -133,6 +133,9 @@
   .finding-txt{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
   .finding-ok{ font-size:12.5px; color:var(--ink-soft); font-style:italic; }
   .plan-jump{ font-size:11px; color:var(--sky); background:none; border:none; cursor:pointer; padding:0; margin-top:7px; text-decoration:underline; text-underline-offset:2px; display:inline-block; }
+  .rd-badge{ font-size:9.5px; text-transform:uppercase; letter-spacing:.02em; padding:2px 7px; border-radius:20px; font-weight:600; margin-left:7px; white-space:nowrap; }
+  select.rd-sel{ font-family:"Work Sans",sans-serif; font-size:12.5px; color:var(--ink); background:transparent; border:none; outline:none; width:100%; padding:5px 0; }
+  .rd-check{ width:15px; height:15px; }
 
   .qa-item label{ display:block; font-size:13px; font-weight:500; margin-bottom:7px; line-height:1.45; }
   textarea, input[type="text"].line{ width:100%; font-family:"Work Sans",sans-serif; font-size:13px; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:3px; padding:9px 11px; resize:vertical; outline:none; }
@@ -198,6 +201,7 @@
       <button class="tab-btn" data-tab="automacao"><span class="tn mono">06</span>Automação</button>
       <button class="tab-btn" data-tab="simulador"><span class="tn mono">07</span>Futuro</button>
       <button class="tab-btn" data-tab="cfo"><span class="tn mono">08</span>CFO pessoal</button>
+      <button class="tab-btn" data-tab="redesenho"><span class="tn mono">09</span>Redesenho</button>
     </nav>
     <div class="sidebar-foot">Tudo salvo apenas no seu navegador (local, privado). Nenhum dado sai daqui.</div>
   </aside>
@@ -574,6 +578,50 @@
       <footer class="note">Diagnóstico recalculado toda vez que você abre esta aba, a partir dos dados já preenchidos nos outros módulos — nada é enviado a lugar nenhum, tudo roda no seu navegador.</footer>
     </section>
 
+    <!-- ============ 09 REDESENHO ============ -->
+    <section class="panel" id="panel-redesenho">
+      <div class="panel-head">
+        <div class="eyebrow" style="color:var(--gold)"><span style="background:var(--gold)"></span>09 · Redesenho de gastos</div>
+        <h1>Cada real com um propósito: o que cortar, o que manter, o que automatizar.</h1>
+        <p class="lede">Liste seus gastos linha por linha (não só o total). Cada um recebe um veredito, e o real vira o teste de verdade dos 4 baldes do orçamento.</p>
+      </div>
+
+      <section class="block">
+        <div class="block-head"><h2>Seus gastos, linha por linha</h2><span class="block-note">valores de exemplo — edite com os seus</span></div>
+        <div class="elist">
+          <div class="elist-grid" style="grid-template-columns:1.5fr 1.3fr 0.9fr 0.7fr 0.8fr 26px;">
+            <div class="elist-head" style="display:contents;">
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Gasto</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Categoria</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Valor</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Auto?</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Assinatura?</div>
+              <div></div>
+            </div>
+            <div id="rdRows" style="display:contents;"></div>
+          </div>
+          <div class="elist-foot"><button class="add-btn" id="rdAdd">+ adicionar gasto</button></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Veredito, item por item</h2></div>
+        <div class="card" id="rdVereditos"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Para onde cada real vai</h2><span class="block-note">real (o que você listou) × alvo (módulo 01)</span></div>
+        <div class="field-grid cols4" id="rdBaldes"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Resumo do redesenho</h2></div>
+        <div class="cards2" id="rdResumo"></div>
+      </section>
+
+      <footer class="note">Regra de corte: entre itens marcados "assinatura", só a de maior valor é mantida — as demais são sinalizadas como corte. Os alvos de cada balde vêm dos percentuais definidos no módulo 01 · Orçamento flexível.</footer>
+    </section>
+
   </main>
 </div>
 
@@ -605,7 +653,24 @@
       ], uid:4,
       meta:{ nome:'', valor:0, guardado:0, data:'' }
     },
-    simulador: { poupanca:null, crescAporte:3, retorno:6, custo:1, retiradaSegura:3.5, ajuste:400 }
+    simulador: { poupanca:null, crescAporte:3, retorno:6, custo:1, retiradaSegura:3.5, ajuste:400 },
+    redesenho: { uid:16, items:[
+        { id:1,  nome:'Aluguel',                    categoria:'Moradia',              valor:1800, automatizado:true,  assinatura:false },
+        { id:2,  nome:'Água, luz e internet',        categoria:'Contas da casa',       valor:450,  automatizado:true,  assinatura:false },
+        { id:3,  nome:'Supermercado',                categoria:'Alimentação',          valor:900,  automatizado:false, assinatura:false },
+        { id:4,  nome:'Combustível/transporte',       categoria:'Transporte',           valor:350,  automatizado:false, assinatura:false },
+        { id:5,  nome:'Plano de saúde',               categoria:'Saúde',                valor:380,  automatizado:true,  assinatura:false },
+        { id:6,  nome:'Seguro do carro',              categoria:'Seguro',               valor:180,  automatizado:true,  assinatura:false },
+        { id:7,  nome:'Parcela de dívida',            categoria:'Financeiro',           valor:300,  automatizado:false, assinatura:false },
+        { id:8,  nome:'Aporte investimentos',         categoria:'Investimentos',        valor:600,  automatizado:false, assinatura:false },
+        { id:9,  nome:'Netflix',                      categoria:'Lazer',                valor:55,   automatizado:true,  assinatura:true },
+        { id:10, nome:'Disney+',                      categoria:'Lazer',                valor:40,   automatizado:true,  assinatura:true },
+        { id:11, nome:'HBO Max',                      categoria:'Lazer',                valor:35,   automatizado:true,  assinatura:true },
+        { id:12, nome:'Restaurante e delivery',       categoria:'Restaurante e delivery', valor:750, automatizado:false, assinatura:false },
+        { id:13, nome:'Compras/extras',               categoria:'Extras',               valor:350,  automatizado:false, assinatura:false },
+        { id:14, nome:'Academia',                     categoria:'Pessoal',              valor:130,  automatizado:true,  assinatura:false },
+        { id:15, nome:'Presente/apoio à família',      categoria:'Família/filhos',       valor:150,  automatizado:false, assinatura:false }
+      ] }
   };
 
   function loadState(){
@@ -635,6 +700,7 @@
     document.getElementById('panel-' + name).classList.add('active');
     document.querySelector('.tab-btn[data-tab="' + name + '"]').classList.add('active');
     if (name === 'cfo') updateCfo();
+    if (name === 'redesenho') updateRedesenho();
   }
   activateTab('perfil');
 
@@ -1333,6 +1399,129 @@
     }).join('');
   }
 
+  /* ================= 09 REDESENHO ================= */
+  var CATEGORIAS_ALL = [];
+  var CATEGORIA_BUCKET = {};
+  ORC_BUCKETS.forEach(function(b){ b.cats.forEach(function(c){ CATEGORIAS_ALL.push(c); CATEGORIA_BUCKET[c] = b.key; }); });
+
+  var rdRowsEl = document.getElementById('rdRows');
+  function renderRdRows(){
+    rdRowsEl.innerHTML = '';
+    S.redesenho.items.forEach(function(it){
+      var row = document.createElement('div');
+      row.style.display = 'contents';
+      var options = CATEGORIAS_ALL.map(function(c){ return '<option value="'+c+'"'+(c===it.categoria?' selected':'')+'>'+c+'</option>'; }).join('');
+      row.innerHTML =
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="nome" data-id="'+it.id+'" value="'+it.nome+'"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><select class="rd-sel" data-f="categoria" data-id="'+it.id+'">'+options+'</select></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="valor" data-id="'+it.id+'" inputmode="decimal" value="'+it.valor.toLocaleString('pt-BR')+'"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;"><input type="checkbox" class="rd-check" data-f="automatizado" data-id="'+it.id+'" '+(it.automatizado?'checked':'')+'></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;"><input type="checkbox" class="rd-check" data-f="assinatura" data-id="'+it.id+'" '+(it.assinatura?'checked':'')+'></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><button class="rm-btn" data-rm="'+it.id+'">×</button></div>';
+      rdRowsEl.appendChild(row);
+    });
+  }
+  function rdFieldChanged(e){
+    var id = e.target.dataset.id; if (!id) return;
+    var it = S.redesenho.items.filter(function(x){ return x.id == id; })[0]; if (!it) return;
+    var f = e.target.dataset.f;
+    if (f==='nome') it.nome = e.target.value;
+    else if (f==='categoria') it.categoria = e.target.value;
+    else if (f==='valor') it.valor = parseNum(e.target.value);
+    else if (f==='automatizado') it.automatizado = e.target.checked;
+    else if (f==='assinatura') it.assinatura = e.target.checked;
+    else return;
+    saveState(); updateRedesenho();
+  }
+  rdRowsEl.addEventListener('input', rdFieldChanged);
+  rdRowsEl.addEventListener('change', rdFieldChanged);
+  rdRowsEl.addEventListener('click', function(e){
+    var id = e.target.dataset.rm; if (!id) return;
+    S.redesenho.items = S.redesenho.items.filter(function(x){ return x.id != id; });
+    renderRdRows(); saveState(); updateRedesenho();
+  });
+  document.getElementById('rdAdd').addEventListener('click', function(){
+    S.redesenho.items.push({ id: S.redesenho.uid++, nome:'Novo gasto', categoria:CATEGORIAS_ALL[0], valor:100, automatizado:false, assinatura:false });
+    renderRdRows(); saveState(); updateRedesenho();
+  });
+  renderRdRows();
+
+  function updateRedesenho(){
+    var renda = S.perfil.renda;
+    var items = S.redesenho.items;
+
+    var assinaturas = items.filter(function(i){ return i.assinatura; }).sort(function(a,b){ return b.valor-a.valor; });
+    var cortadas = assinaturas.slice(1);
+    var cortarMap = {};
+    cortadas.forEach(function(i){ cortarMap[i.id] = assinaturas[0].nome; });
+
+    var vereditos = items.map(function(it){
+      var bucket = CATEGORIA_BUCKET[it.categoria] || 'semCulpa';
+      var acao, motivo, tags = [];
+      if (cortarMap[it.id]){
+        acao = 'cortar'; motivo = 'Assinatura adicional — considere manter só "' + cortarMap[it.id] + '" e cancelar esta.';
+      } else if (bucket === 'fixos'){
+        acao = 'manter'; motivo = 'Despesa essencial.';
+        if (!it.automatizado) tags.push('automatizar');
+      } else if (bucket === 'pague'){
+        acao = 'manter'; motivo = 'Construção de patrimônio — priorize.';
+        if (!it.automatizado) tags.push('automatizar');
+      } else if (bucket === 'familia'){
+        acao = 'manter'; motivo = 'Gasto relacional — mantenha.';
+      } else {
+        acao = 'manter'; motivo = 'Gasto livre — sem culpa, sem revisão item a item.';
+      }
+      return { it:it, bucket:bucket, acao:acao, motivo:motivo, tags:tags };
+    });
+
+    var acaoColor = { manter:'var(--moss)', cortar:'var(--rose)' };
+    var acaoBg = { manter:'var(--moss-bg)', cortar:'var(--rose-bg)' };
+    document.getElementById('rdVereditos').innerHTML = vereditos.map(function(v){
+      var badges = '<span class="rd-badge" style="background:' + acaoBg[v.acao] + ';color:' + acaoColor[v.acao] + '">' + v.acao + '</span>';
+      v.tags.forEach(function(t){ badges += '<span class="rd-badge" style="background:var(--sky-bg);color:var(--sky)">' + t + '</span>'; });
+      return '<div class="finding"><span class="finding-dot" style="background:' + acaoColor[v.acao] + '"></span><div style="flex:1;"><div class="finding-title">' + v.it.nome + ' ' + badges + '</div><div class="finding-txt">' + v.it.categoria + ' · ' + BRL.format(v.it.valor) + ' — ' + v.motivo + '</div></div></div>';
+    }).join('');
+
+    var totals = { fixos:0, pague:0, familia:0, semCulpa:0 };
+    items.forEach(function(it){ var b = CATEGORIA_BUCKET[it.categoria] || 'semCulpa'; totals[b] += it.valor; });
+    var totalsPos = Object.assign({}, totals);
+    cortadas.forEach(function(i){ var b = CATEGORIA_BUCKET[i.categoria] || 'semCulpa'; totalsPos[b] -= i.valor; });
+
+    document.getElementById('rdBaldes').innerHTML = ORC_BUCKETS.map(function(b){
+      var real = totalsPos[b.key];
+      var alvoPct = S.orcamento.pcts[b.key];
+      var alvo = renda * alvoPct/100;
+      var realPct = renda>0 ? (real/renda)*100 : 0;
+      var diff = realPct - alvoPct;
+      var status, statusColor;
+      if (Math.abs(diff) <= 2){ status = 'dentro da meta'; statusColor = 'var(--moss)'; }
+      else if (diff > 0){ status = 'acima da meta'; statusColor = 'var(--rose)'; }
+      else { status = 'abaixo da meta'; statusColor = 'var(--sky)'; }
+      return '<div class="stat-card"><div class="sc-title" style="color:var(' + b.accent + ')">' + b.nome + '</div>' +
+        '<div class="sc-amt mono">' + BRL.format(real) + '</div>' +
+        '<div class="sc-sub">alvo: ' + BRL.format(alvo) + ' (' + alvoPct.toFixed(0) + '%)</div>' +
+        '<div class="stat-row"><span class="stat-label">' + realPct.toFixed(1) + '% da renda</span><span class="mono" style="color:' + statusColor + ';font-weight:600;">' + status + '</span></div>' +
+      '</div>';
+    }).join('');
+
+    var totalCortado = cortadas.reduce(function(s,i){ return s+i.valor; }, 0);
+    var despesaAtual = items.reduce(function(s,i){ return s+i.valor; }, 0);
+    var despesaPos = despesaAtual - totalCortado;
+    var taxaAtual = renda>0 ? ((renda-despesaAtual)/renda)*100 : 0;
+    var taxaPos = renda>0 ? ((renda-despesaPos)/renda)*100 : 0;
+    var naoAutomatizados = vereditos.filter(function(v){ return v.tags.indexOf('automatizar') >= 0; });
+
+    document.getElementById('rdResumo').innerHTML =
+      '<div class="stat-card"><div class="sc-title" style="color:var(--rose)">Total a cortar</div>' +
+        '<div class="sc-amt mono" style="color:var(--rose)">' + BRL.format(totalCortado) + '/mês</div>' +
+        '<div class="sc-sub">' + BRL.format(totalCortado*12) + ' por ano — ' + cortadas.length + ' assinatura(s) redundante(s).</div>' +
+      '</div>' +
+      '<div class="stat-card"><div class="sc-title" style="color:var(--moss)">Taxa de poupança projetada</div>' +
+        '<div class="sc-amt mono" style="color:var(--moss)">' + taxaPos.toFixed(1) + '%</div>' +
+        '<div class="sc-sub">era ' + taxaAtual.toFixed(1) + '% antes dos cortes · ' + naoAutomatizados.length + ' item(ns) essencial(is) ainda não automatizado(s).</div>' +
+      '</div>';
+  }
+
   /* load module-specific text/select inputs from state */
   document.getElementById('divExtra').value = S.dividas.extra != null ? fmtInput(S.dividas.extra) : fmtInput(capacidade());
   document.getElementById('pfHorizonte').value = S.portfolio.horizonte;
@@ -1354,6 +1543,7 @@
     updateAutomacao();
     updateSimulador();
     updateCfo();
+    updateRedesenho();
   }
   updateAll();
 })();

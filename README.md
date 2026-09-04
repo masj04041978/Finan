@@ -4,7 +4,7 @@ Um sistema de organização financeira pessoal baseado em automação e psicolog
 
 ## App unificado
 
-[`app.html`](app.html) — os 7 módulos abaixo reunidos em um único app, com um perfil compartilhado (renda, despesas, idade, patrimônio, perfil de risco) preenchido uma vez e reaproveitado em todos eles, mais um 8º módulo: **CFO pessoal**, que lê os outros 7 e gera automaticamente vazamentos de dinheiro, oportunidades perdidas, erros financeiros e um plano ordenado de até 3 passos (ex.: dívida cara identificada → priorize quitá-la antes de investir mais). Cada módulo mantém seus campos específicos (dívidas, metas, país, respostas do ritual) e tudo é salvo apenas no navegador local — nenhum dado sai daqui. Este é o ponto de entrada recomendado; os arquivos individuais abaixo continuam funcionando de forma independente.
+[`app.html`](app.html) — os 7 módulos abaixo reunidos em um único app, com um perfil compartilhado (renda, despesas, idade, patrimônio, perfil de risco) preenchido uma vez e reaproveitado em todos eles, mais dois módulos que sintetizam os outros: **08 · CFO pessoal**, que lê os 7 módulos e gera vazamentos de dinheiro, oportunidades perdidas, erros financeiros e um plano ordenado de até 3 passos; e **09 · Redesenho de gastos**, onde você lista os gastos reais linha por linha e cada um recebe um veredito (manter / cortar / automatizar) — com regra concreta para assinaturas duplicadas — e os totais por categoria são comparados com as metas do módulo 01. Cada módulo mantém seus campos específicos (dívidas, metas, país, respostas do ritual) e tudo é salvo apenas no navegador local — nenhum dado sai daqui. Este é o ponto de entrada recomendado; os arquivos individuais abaixo continuam funcionando de forma independente.
 
 ## Estrutura
 
