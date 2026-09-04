@@ -714,6 +714,16 @@
   var STORAGE_KEY = 'finan_app_v1';
 
   function parseNum(str){ var n = parseFloat(String(str||'').replace(/\./g,'').replace(',', '.')); return isNaN(n)||n<0 ? 0 : n; }
+  function esc(str){
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function parseLocalDate(str){
+    if (!str) return new Date();
+    var p = str.split('-');
+    return new Date(+p[0], +p[1]-1, +p[2]);
+  }
   function fmtInput(n){ return n.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
   function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
 
@@ -925,7 +935,7 @@
       var row = document.createElement('div');
       row.style.display = 'contents';
       row.innerHTML =
-        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;" data-id="' + d.id + '"><input data-f="nome" value="' + d.nome + '"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><input data-f="nome" data-id="' + d.id + '" value="' + esc(d.nome) + '"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><input data-f="saldo" data-id="' + d.id + '" inputmode="decimal" value="' + d.saldo.toLocaleString('pt-BR') + '"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><input data-f="taxa" data-id="' + d.id + '" inputmode="decimal" value="' + String(d.taxa).replace('.',',') + '"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><input data-f="min" data-id="' + d.id + '" inputmode="decimal" value="' + d.min.toLocaleString('pt-BR') + '"></div>' +
@@ -1015,7 +1025,7 @@
       if (r===fastest && r===cheapest) badge='<span class="badge" style="background:var('+r.bg+');color:var('+r.accent+')">rápido·barato</span>';
       else if (r===fastest) badge='<span class="badge" style="background:var('+r.bg+');color:var('+r.accent+')">mais rápido</span>';
       else if (r===cheapest) badge='<span class="badge" style="background:var('+r.bg+');color:var('+r.accent+')">menos juros</span>';
-      var orderNames = r.orderIds.map(function(id){ var d=debts.filter(function(x){return x.id==id;})[0]; return d?d.nome:''; }).filter(Boolean).join(' → ');
+      var orderNames = r.orderIds.map(function(id){ var d=debts.filter(function(x){return x.id==id;})[0]; return d?esc(d.nome):''; }).filter(Boolean).join(' → ');
       var dataTxt = r.quitado ? fmtDate(r.dataQuitacao) : '> 50 anos';
       return '<div class="stat-card">' + badge +
         '<div class="sc-title" style="color:var('+r.accent+')">'+r.nome+'</div>' +
@@ -1270,7 +1280,7 @@
     var meta = S.automacao.meta;
     var metaAporte = 0;
     if (meta.valor > 0){
-      var target = new Date(meta.data || now);
+      var target = meta.data ? parseLocalDate(meta.data) : now;
       var months = monthsBetween(now, target);
       var restante = Math.max(0, meta.valor-meta.guardado);
       metaAporte = months>0 ? restante/months : restante;
@@ -1289,7 +1299,7 @@
     for (var i=0;i<firstWeekday;i++) cells += '<div class="cal-cell empty"></div>';
     for (var day=1; day<=daysInMonth; day++){
       var evs = events[day]||[];
-      var tags = evs.map(function(e){ return '<span class="cal-tag" style="background:'+e.color+';color:var(--surface)">'+e.label+'</span>'; }).join('');
+      var tags = evs.map(function(e){ return '<span class="cal-tag" style="background:'+e.color+';color:var(--surface)">'+esc(e.label)+'</span>'; }).join('');
       cells += '<div class="cal-cell"><span class="cal-daynum">'+day+'</span>'+tags+'</div>';
     }
     document.getElementById('auCalGrid').innerHTML = cells;
@@ -1301,7 +1311,7 @@
 
     document.getElementById('auFixosRows').innerHTML = fixas.length ? fixas.map(function(d){
       return '<div style="display:contents;">' +
-        '<div style="padding:8px 12px;border-bottom:1px solid var(--line);">'+d.nome+'</div>' +
+        '<div style="padding:8px 12px;border-bottom:1px solid var(--line);">'+esc(d.nome)+'</div>' +
         '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-family:IBM Plex Mono,monospace;text-align:right;">'+BRL.format(d.valor)+'</div>' +
         '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-family:IBM Plex Mono,monospace;text-align:right;color:var(--ink-soft);">dia '+d.dia+'</div>' +
       '</div>';
@@ -1313,7 +1323,7 @@
     if (meta.valor>0) rows.push({ destino:'Meta: '+(meta.nome||'—'), valor:metaAporte, dia:diaPos, color:'color-mix(in srgb, var(--moss) 45%, var(--gold) 55%)' });
     document.getElementById('auSumRows').innerHTML = rows.map(function(r){
       return '<div style="display:contents;">' +
-        '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-weight:600;color:'+r.color+';">'+r.destino+'</div>' +
+        '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-weight:600;color:'+r.color+';">'+esc(r.destino)+'</div>' +
         '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-family:IBM Plex Mono,monospace;text-align:right;">'+BRL.format(r.valor)+'</div>' +
         '<div style="padding:8px 12px;border-bottom:1px solid var(--line);font-family:IBM Plex Mono,monospace;text-align:right;color:var(--ink-soft);">dia '+r.dia+'</div>' +
       '</div>';
@@ -1416,11 +1426,9 @@
     var custo20anos = 0;
     if (custoAlto && S.perfil.patrimonio + (S.simulador.poupanca||cap) > 0){
       var poup = S.simulador.poupanca != null ? S.simulador.poupanca : cap;
-      var i1 = Math.pow(1+S.simulador.retorno/100, 1/12)-1;
-      var i2 = Math.pow(1+(S.simulador.retorno-S.simulador.custo)/100, 1/12)-1;
-      var p1=S.perfil.patrimonio, p2=S.perfil.patrimonio, c1=poup, c2=poup;
-      for (var m=1;m<=240;m++){ p1=p1*(1+i1)+c1; p2=p2*(1+i2)+c2; if (m%12===0){ c1*=1.03; c2*=1.03; } }
-      custo20anos = p1-p2;
+      var semCusto = simulateFuture(S.perfil.patrimonio, poup, S.simulador.retorno/100, 0.03, 240);
+      var comCusto = simulateFuture(S.perfil.patrimonio, poup, (S.simulador.retorno-S.simulador.custo)/100, 0.03, 240);
+      custo20anos = semCusto[240].total - comCusto[240].total;
     }
 
     return { renda:renda, despesas:despesas, cap:cap, taxaPoupanca:taxaPoupanca, alvoReserva:alvoReserva, colchaoInicial:colchaoInicial,
@@ -1445,14 +1453,14 @@
     if (d.cap>0 && d.taxaPoupanca < 10) vaz.push({ t:'Taxa de poupança abaixo do saudável', x:'Sua taxa de poupança está em ' + d.taxaPoupanca.toFixed(1) + '%, abaixo do mínimo de referência de 10%.', jump:'orcamento' });
     if (d.custoAlto) vaz.push({ t:'Custo de fundos alto', x:S.simulador.custo.toFixed(1) + '% a.a. de taxa de administração consome ' + BRL.format(d.custo20anos) + ' em 20 anos comparado a um fundo de baixo custo.', jump:'simulador' });
     document.getElementById('cfoVazamentos').innerHTML = vaz.length ? vaz.map(function(v){
-      return '<div class="finding"><span class="finding-dot" style="background:var(--rose)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
+      return '<div class="finding"><span class="finding-dot" style="background:var(--rose)"></span><div><div class="finding-title">'+esc(v.t)+'</div><div class="finding-txt">'+esc(v.x)+'</div>'+jumpBtn(v.jump)+'</div></div>';
     }).join('') : '<div class="finding-ok">Nenhum vazamento óbvio identificado nos dados atuais.</div>';
 
     var opp = [];
     if (d.sobrandoAlemReserva > 500) opp.push({ t:'Dinheiro parado além da reserva', x: BRL.format(d.sobrandoAlemReserva) + ' na poupança líquida além do que a reserva de emergência precisa — poderia estar investido rendendo mais.', jump:'liberdade' });
     if (!d.temMeta) opp.push({ t:'Nenhuma meta específica', x:'Sem meta com valor e prazo cadastrada em Automação — sem prazo definido, não vira aporte automático dedicado.', jump:'automacao' });
     document.getElementById('cfoOportunidades').innerHTML = opp.length ? opp.map(function(v){
-      return '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
+      return '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">'+esc(v.t)+'</div><div class="finding-txt">'+esc(v.x)+'</div>'+jumpBtn(v.jump)+'</div></div>';
     }).join('') : '<div class="finding-ok">Nenhuma oportunidade óbvia ficando parada.</div>';
 
     var err = [];
@@ -1460,7 +1468,7 @@
     if (d.saldoCaro>0 && S.perfil.patrimonio>0) err.push({ t:'Investindo com dívida cara em aberto', x:'Você tem ' + BRL.format(d.saldoCaro) + ' em dívida acima de 8% a.m. e também tem investimentos — o juro da dívida quase certamente supera o retorno do investimento.', jump:'estrategia' });
     if (d.reservaPct<20 && d.saldoCaro===0) err.push({ t:'Investindo agressivamente sem reserva', x:'A reserva de emergência está em ' + Math.round(d.reservaPct) + '% — um imprevisto pode forçar venda de investimento ou nova dívida.', jump:'liberdade' });
     document.getElementById('cfoErros').innerHTML = err.length ? err.map(function(v){
-      return '<div class="finding"><span class="finding-dot" style="background:var(--rose)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
+      return '<div class="finding"><span class="finding-dot" style="background:var(--rose)"></span><div><div class="finding-title">'+esc(v.t)+'</div><div class="finding-txt">'+esc(v.x)+'</div>'+jumpBtn(v.jump)+'</div></div>';
     }).join('') : '<div class="finding-ok">Nenhum erro estrutural óbvio identificado.</div>';
 
     var plano = [];
@@ -1472,7 +1480,7 @@
     if (!plano.length) plano.push({ t:'Sua base está sólida', x:'Continue o ritual mensal de revisão e direcione todo aumento de renda primeiro para a taxa de poupança.', jump:'revisao' });
 
     document.getElementById('cfoPlano').innerHTML = plano.slice(0,3).map(function(p, i){
-      return '<li><span class="step-n mono">'+(i+1).toString().padStart(2,'0')+'</span><span class="step-txt"><b>'+p.t+'</b><br>'+p.x+'<br>'+jumpBtn(p.jump)+'</span></li>';
+      return '<li><span class="step-n mono">'+(i+1).toString().padStart(2,'0')+'</span><span class="step-txt"><b>'+esc(p.t)+'</b><br>'+esc(p.x)+'<br>'+jumpBtn(p.jump)+'</span></li>';
     }).join('');
   }
 
@@ -1489,7 +1497,7 @@
       row.style.display = 'contents';
       var options = CATEGORIAS_ALL.map(function(c){ return '<option value="'+c+'"'+(c===it.categoria?' selected':'')+'>'+c+'</option>'; }).join('');
       row.innerHTML =
-        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="nome" data-id="'+it.id+'" value="'+it.nome+'"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="nome" data-id="'+it.id+'" value="'+esc(it.nome)+'"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><select class="rd-sel" data-f="categoria" data-id="'+it.id+'">'+options+'</select></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="valor" data-id="'+it.id+'" inputmode="decimal" value="'+it.valor.toLocaleString('pt-BR')+'"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="dia" data-id="'+it.id+'" inputmode="numeric" value="'+(it.dia||1)+'"></div>' +
@@ -1558,7 +1566,7 @@
     document.getElementById('rdVereditos').innerHTML = vereditos.map(function(v){
       var badges = '<span class="rd-badge" style="background:' + acaoBg[v.acao] + ';color:' + acaoColor[v.acao] + '">' + v.acao + '</span>';
       v.tags.forEach(function(t){ badges += '<span class="rd-badge" style="background:var(--sky-bg);color:var(--sky)">' + t + '</span>'; });
-      return '<div class="finding"><span class="finding-dot" style="background:' + acaoColor[v.acao] + '"></span><div style="flex:1;"><div class="finding-title">' + v.it.nome + ' ' + badges + '</div><div class="finding-txt">' + v.it.categoria + ' · ' + BRL.format(v.it.valor) + ' — ' + v.motivo + '</div></div></div>';
+      return '<div class="finding"><span class="finding-dot" style="background:' + acaoColor[v.acao] + '"></span><div style="flex:1;"><div class="finding-title">' + esc(v.it.nome) + ' ' + badges + '</div><div class="finding-txt">' + esc(v.it.categoria) + ' · ' + BRL.format(v.it.valor) + ' — ' + esc(v.motivo) + '</div></div></div>';
     }).join('');
 
     var totals = { fixos:0, pague:0, familia:0, semCulpa:0 };
@@ -1613,7 +1621,7 @@
       var options = CATEGORIAS_ALL.map(function(c){ return '<option value="'+c+'"'+(c===t.categoria?' selected':'')+'>'+c+'</option>'; }).join('');
       row.innerHTML =
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input type="date" data-f="data" data-id="'+t.id+'" value="'+t.data+'" style="font-family:IBM Plex Mono,monospace;font-size:12.5px;border:none;background:transparent;color:var(--ink);width:100%;outline:none;"></div>' +
-        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="descricao" data-id="'+t.id+'" value="'+t.descricao+'"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="descricao" data-id="'+t.id+'" value="'+esc(t.descricao)+'"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><select class="rd-sel" data-f="categoria" data-id="'+t.id+'">'+options+'</select></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="valor" data-id="'+t.id+'" inputmode="decimal" value="'+t.valor.toLocaleString('pt-BR')+'"></div>' +
         '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><button class="rm-btn" data-rm="'+t.id+'">×</button></div>';
@@ -1707,8 +1715,8 @@
         ? BRL.format(f.valorInicial) + ' → ' + BRL.format(f.valorFinal) + ' (' + f.ocorrencias + 'x)'
         : (f.tipo === 'impulso' ? BRL.format(f.valor) + ' (ocorrência única)' : BRL.format(f.valor) + '/mês (' + f.ocorrencias + 'x)');
       return '<div class="finding"><span class="finding-dot" style="background:' + m.color + '"></span><div style="flex:1;">' +
-        '<div class="finding-title">' + f.desc + ' <span class="rd-badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.label + '</span></div>' +
-        '<div class="finding-txt">' + f.categoria + ' · ' + valorTxt + '</div></div></div>';
+        '<div class="finding-title">' + esc(f.desc) + ' <span class="rd-badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.label + '</span></div>' +
+        '<div class="finding-txt">' + esc(f.categoria) + ' · ' + valorTxt + '</div></div></div>';
     }).join('') : '<div class="finding-ok">Nenhum padrão de assinatura, vazamento, impulso ou aumento identificado nas transações atuais.</div>';
 
     var ranked = findings.map(function(f){
@@ -1718,11 +1726,12 @@
     }).sort(function(a,b){ return b.score - a.score; });
 
     document.getElementById('htRanking').innerHTML = ranked.length ? ranked.map(function(r, i){
+      var descSafe = esc(r.f.desc);
       var economiaTxt = r.f.tipo === 'impulso' ? BRL.format(r.comparavel) + ' observado nessa ocorrência' : BRL.format(r.comparavel) + '/ano se eliminado';
       var acao = r.f.tipo === 'aumento'
-        ? 'Volte ao patamar de ' + BRL.format(r.f.valorInicial) + ' em "' + r.f.desc + '" — a alta silenciosa é o maior ralo aqui.'
-        : (r.f.tipo === 'impulso' ? 'Evite repetir uma compra parecida com "' + r.f.desc + '" por impulso.' : 'Cancele ou revise "' + r.f.desc + '".');
-      return '<li><span class="step-n mono">' + (i+1).toString().padStart(2,'0') + '</span><span class="step-txt"><b>' + r.f.desc + '</b> <span class="rd-badge" style="background:' + r.m.bg + ';color:' + r.m.color + '">' + r.m.label + '</span><br>' + economiaTxt + ' · impacto no estilo de vida: ' + r.m.impacto + '<br>' + acao + '</span></li>';
+        ? 'Volte ao patamar de ' + BRL.format(r.f.valorInicial) + ' em "' + descSafe + '" — a alta silenciosa é o maior ralo aqui.'
+        : (r.f.tipo === 'impulso' ? 'Evite repetir uma compra parecida com "' + descSafe + '" por impulso.' : 'Cancele ou revise "' + descSafe + '".');
+      return '<li><span class="step-n mono">' + (i+1).toString().padStart(2,'0') + '</span><span class="step-txt"><b>' + descSafe + '</b> <span class="rd-badge" style="background:' + r.m.bg + ';color:' + r.m.color + '">' + r.m.label + '</span><br>' + economiaTxt + ' · impacto no estilo de vida: ' + r.m.impacto + '<br>' + acao + '</span></li>';
     }).join('') : '<li><span class="step-n mono">—</span><span class="step-txt">Sem mudanças a sugerir com os dados atuais.</span></li>';
 
     var recorrentes = findings.filter(function(f){ return f.tipo !== 'impulso'; });
@@ -1757,7 +1766,8 @@
     }
 
     var retornoLiquidoAnual = S.simulador.retorno - S.simulador.custo;
-    var investMonthly = (Math.pow(1+retornoLiquidoAnual/100, 1/12)-1)*100;
+    var baseRetorno = Math.max(0, 1 + retornoLiquidoAnual/100);
+    var investMonthly = (Math.pow(baseRetorno, 1/12)-1)*100;
     var limiar = investMonthly * 1.5;
 
     var quitarAgora = [], manterInvestir = [];
@@ -1767,7 +1777,7 @@
       var color = quitar ? 'var(--rose)' : 'var(--moss)';
       var bg = quitar ? 'var(--rose-bg)' : 'var(--moss-bg)';
       var label = quitar ? 'quitar agora' : 'manter e investir';
-      return '<div class="finding"><span class="finding-dot" style="background:' + color + '"></span><div><div class="finding-title">' + d.nome + ' <span class="rd-badge" style="background:' + bg + ';color:' + color + '">' + label + '</span></div><div class="finding-txt">taxa ' + d.taxa.toFixed(1).replace('.',',') + '% a.m. × retorno líquido de referência ' + investMonthly.toFixed(2).replace('.',',') + '% a.m. (limiar de 1,5×: ' + limiar.toFixed(2).replace('.',',') + '%)</div></div></div>';
+      return '<div class="finding"><span class="finding-dot" style="background:' + color + '"></span><div><div class="finding-title">' + esc(d.nome) + ' <span class="rd-badge" style="background:' + bg + ';color:' + color + '">' + label + '</span></div><div class="finding-txt">taxa ' + d.taxa.toFixed(1).replace('.',',') + '% a.m. × retorno líquido de referência ' + investMonthly.toFixed(2).replace('.',',') + '% a.m. (limiar de 1,5×: ' + limiar.toFixed(2).replace('.',',') + '%)</div></div></div>';
     }).join('');
     document.getElementById('estComparacao').innerHTML = compHtml || '<div class="finding-ok">Nenhuma dívida cadastrada — adicione em 02 · Dívidas.</div>';
 
@@ -1798,9 +1808,9 @@
     var objEl = document.getElementById('estObjetivo');
     if (meta && meta.valor > 0){
       if (dataLivre){
-        objEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">Meta "' + meta.nome + '" começa a receber aporte cheio após a quitação</div><div class="finding-txt">A partir de ' + fmtDate(dataLivre) + ', o fluxo de caixa hoje destinado à dívida cara (' + BRL.format(extra) + '/mês) libera para essa meta — atualize o valor em 06 · Automação quando chegar lá.</div></div></div>';
+        objEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">Meta "' + esc(meta.nome) + '" começa a receber aporte cheio após a quitação</div><div class="finding-txt">A partir de ' + fmtDate(dataLivre) + ', o fluxo de caixa hoje destinado à dívida cara (' + BRL.format(extra) + '/mês) libera para essa meta — atualize o valor em 06 · Automação quando chegar lá.</div></div></div>';
       } else {
-        objEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">Meta "' + meta.nome + '" já pode receber aporte</div><div class="finding-txt">Como nenhuma dívida compensa quitação acelerada, direcione o fluxo de caixa disponível direto para essa meta em 06 · Automação.</div></div></div>';
+        objEl.innerHTML = '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">Meta "' + esc(meta.nome) + '" já pode receber aporte</div><div class="finding-txt">Como nenhuma dívida compensa quitação acelerada, direcione o fluxo de caixa disponível direto para essa meta em 06 · Automação.</div></div></div>';
       }
     } else {
       objEl.innerHTML = '<div class="finding-ok">Nenhuma meta específica cadastrada ainda — defina uma em 06 · Automação para ela entrar automaticamente nesta estratégia assim que as dívidas caras forem quitadas.</div>';
