@@ -1,0 +1,242 @@
+<title>Simulador de Futuro Financeiro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,440;9..144,560;9..144,650&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --paper:#f5f3ea; --surface:#fffdf6; --ink:#1c2a23; --ink-soft:#5a6a62; --line:#ddd5be; --focus:#3f6b53;
+    --moss:#2f5b45; --moss-bg:#e3ebe3;
+    --sky:#2f6579;  --sky-bg:#e1ebee;
+    --rose:#9c4a41; --rose-bg:#f2e2de;
+    --gold:#a8741f; --gold-bg:#f4e7c9;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+      --moss:#7cbf9c; --moss-bg:#20362b;
+      --sky:#7cb7cc;  --sky-bg:#1c3038;
+      --rose:#e2a49a; --rose-bg:#3a2622;
+      --gold:#e3b45c; --gold-bg:#3a2f15;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131e19; --surface:#182521; --ink:#eae6d9; --ink-soft:#9fb0a6; --line:#2b3a33;
+    --moss:#7cbf9c; --moss-bg:#20362b;
+    --sky:#7cb7cc;  --sky-bg:#1c3038;
+    --rose:#e2a49a; --rose-bg:#3a2622;
+    --gold:#e3b45c; --gold-bg:#3a2f15;
+  }
+
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:"Work Sans",system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection{ background:var(--gold-bg); }
+  .wrap{ max-width:980px; margin:0 auto; padding:56px 24px 96px; }
+  h1,h2,h3{ font-family:"Fraunces",Georgia,serif; font-weight:650; text-wrap:balance; margin:0; }
+  .mono{ font-family:"IBM Plex Mono","SFMono-Regular",monospace; font-variant-numeric:tabular-nums; }
+
+  header.hero{ border-bottom:1px solid var(--line); padding-bottom:32px; margin-bottom:40px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--moss); font-weight:600; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:var(--moss); display:inline-block; }
+  h1{ font-size:clamp(28px,4.2vw,42px); line-height:1.1; letter-spacing:-.01em; }
+  .lede{ font-size:16px; line-height:1.6; color:var(--ink-soft); max-width:64ch; margin-top:14px; }
+
+  section{ margin-top:48px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
+  .section-head h2{ font-size:21px; }
+  .section-note{ font-size:13px; color:var(--ink-soft); max-width:38ch; text-align:right; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px 24px; }
+  .field-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:760px){ .field-grid{ grid-template-columns:1fr 1fr; } }
+  .field label{ display:block; font-size:12px; color:var(--ink-soft); margin-bottom:6px; }
+  .input-shell{ display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink); padding-bottom:4px; }
+  .input-shell span{ font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-soft); }
+  .field input[type="text"]{ font-family:"IBM Plex Mono",monospace; font-size:16px; font-weight:600; color:var(--ink); background:transparent; border:none; outline:none; width:100%; padding:0; }
+  .adjust-field{ margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
+  .adjust-field label{ color:var(--gold); font-weight:600; }
+
+  /* year cards */
+  .years{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:700px){ .years{ grid-template-columns:1fr; } }
+  .ycard{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:20px; display:flex; flex-direction:column; gap:10px; }
+  .ycard-year{ font-family:"Fraunces",serif; font-size:19px; font-weight:650; }
+  .ycard-row{ display:flex; justify-content:space-between; align-items:baseline; }
+  .ycard-label{ font-size:12px; color:var(--ink-soft); }
+  .ycard-val{ font-size:17px; font-weight:600; }
+  .ycard-delta{ font-size:12px; color:var(--gold); font-family:"IBM Plex Mono",monospace; }
+  .ycard-passive{ border-top:1px solid var(--line); padding-top:8px; font-size:12px; color:var(--ink-soft); }
+
+  /* chart */
+  .chart-card{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:22px; }
+  .legend{ display:flex; gap:18px; margin-bottom:12px; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft); }
+  .legend-dot{ width:9px; height:9px; border-radius:50%; }
+  svg text{ font-family:"IBM Plex Mono",monospace; font-size:10.5px; fill:var(--ink-soft); }
+  .axis-line{ stroke:var(--line); stroke-width:1; }
+  .grid-line{ stroke:var(--line); stroke-width:1; stroke-dasharray:2 3; }
+  .method-line{ fill:none; stroke-width:2.4; }
+
+  .cost-callout{ margin-top:16px; background:var(--rose-bg); border:1px solid color-mix(in srgb, var(--rose) 35%, transparent); border-radius:3px; padding:12px 16px; font-size:13.5px; color:var(--ink-soft); }
+  .cost-callout b{ color:var(--rose); }
+
+  .risks{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  @media (max-width:640px){ .risks{ grid-template-columns:1fr; } }
+  .risk{ background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:14px 16px; }
+  .risk-title{ font-size:13.5px; font-weight:600; margin-bottom:4px; }
+  .risk-txt{ font-size:12.5px; color:var(--ink-soft); line-height:1.55; }
+
+  footer{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-soft); line-height:1.6; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">Simulador de futuro financeiro</div>
+    <h1>Onde sua rotina atual te leva em 5, 10 e 20 anos — e o que muda isso de verdade.</h1>
+    <p class="lede">Projeção em termos reais (acima da inflação), com um ajuste que você simula ao lado para ver a diferença acumulada. Edite com seus números.</p>
+  </header>
+
+  <section>
+    <div class="section-head"><h2>Sua situação</h2><span class="section-note">valores de exemplo — edite com os seus</span></div>
+    <div class="card">
+      <div class="field-grid">
+        <div class="field"><label for="poupanca">Poupança/investimento mensal atual</label><div class="input-shell"><span>R$</span><input type="text" id="poupanca" inputmode="decimal" value="1.200,00"></div></div>
+        <div class="field"><label for="patrimonio">Patrimônio já investido</label><div class="input-shell"><span>R$</span><input type="text" id="patrimonio" inputmode="decimal" value="15.000,00"></div></div>
+        <div class="field"><label for="crescAporte">Crescimento anual dos aportes</label><div class="input-shell"><input type="text" id="crescAporte" inputmode="decimal" value="3"><span>% a.a.</span></div></div>
+        <div class="field"><label for="retorno">Retorno bruto esperado (real)</label><div class="input-shell"><input type="text" id="retorno" inputmode="decimal" value="6"><span>% a.a.</span></div></div>
+        <div class="field"><label for="custo">Custo anual dos fundos/taxas</label><div class="input-shell"><input type="text" id="custo" inputmode="decimal" value="1"><span>% a.a.</span></div></div>
+        <div class="field"><label for="retiradaSegura">Taxa de retirada segura (para renda passiva)</label><div class="input-shell"><input type="text" id="retiradaSegura" inputmode="decimal" value="3,5"><span>%</span></div></div>
+      </div>
+      <div class="adjust-field field">
+        <label for="ajuste">Ajuste simulado: aporte mensal extra a partir de hoje</label>
+        <div class="input-shell"><span>R$</span><input type="text" id="ajuste" inputmode="decimal" value="400,00"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Projeção</h2><div class="section-note">trajetória atual × com o ajuste</div></div>
+    <div class="years" id="years"></div>
+  </section>
+
+  <section>
+    <div class="chart-card">
+      <div class="legend" id="legend"></div>
+      <svg id="chart" viewBox="0 0 640 260" width="100%" role="img" aria-label="Comparação da trajetória de patrimônio atual e com o ajuste simulado ao longo de 20 anos"></svg>
+    </div>
+    <div class="cost-callout" id="costCallout"></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Os riscos que a projeção simples esconde</h2></div>
+    <div class="risks">
+      <div class="risk"><div class="risk-title">Retorno nominal em vez de real</div><div class="risk-txt">Sem descontar a inflação, o número final parece maior do que o poder de compra que representa.</div></div>
+      <div class="risk"><div class="risk-title">Risco de sequência de retornos</div><div class="risk-txt">Quedas próximas ao momento de usar o dinheiro doem mais do que a média histórica sugere.</div></div>
+      <div class="risk"><div class="risk-title">Interrupção de renda</div><div class="risk-txt">Sem fundo de emergência, meses sem aporte tiram a simulação dos trilhos a partir desse ponto.</div></div>
+      <div class="risk"><div class="risk-title">Inflação de estilo de vida</div><div class="risk-txt">Cada aumento de renda que vira gasto novo reduz o composto de forma silenciosa e cumulativa.</div></div>
+      <div class="risk"><div class="risk-title">Custo dos fundos</div><div class="risk-txt">1 ponto percentual ao ano parece pouco e costuma consumir dois dígitos do patrimônio final em 20 anos.</div></div>
+      <div class="risk"><div class="risk-title">Pânico em quedas</div><div class="risk-txt">Vender na baixa ou pausar aportes numa crise pesa mais que a escolha exata de qual fundo usar.</div></div>
+    </div>
+  </section>
+
+  <footer>
+    Simulação mensal com juros compostos sobre o retorno líquido (bruto − custo), aportes reajustados anualmente pelo crescimento informado. "Renda passiva potencial" = patrimônio × taxa de retirada segura ÷ 12. Metodologia completa em <span class="mono">docs/simulador-futuro-financeiro.md</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
+
+  var ids = ['poupanca','patrimonio','crescAporte','retorno','custo','retiradaSegura','ajuste'];
+  var els = {}; ids.forEach(function(id){ els[id] = document.getElementById(id); });
+
+  function parseNum(str){ var n = parseFloat(String(str).replace(/\./g,'').replace(',', '.')); return isNaN(n) ? 0 : n; }
+
+  function simulate(principal0, contrib0, annualReturn, annualStepUp, months){
+    var i = Math.pow(1+annualReturn, 1/12) - 1;
+    var principal = principal0, contrib = contrib0;
+    var history = [{ m:0, total:principal0 }];
+    for (var m=1; m<=months; m++){
+      principal = principal*(1+i) + contrib;
+      if (m % 12 === 0) contrib *= (1+annualStepUp);
+      history.push({ m:m, total:principal });
+    }
+    return history;
+  }
+
+  function fmtShort(v){ if (v>=1000) return 'R$ ' + Math.round(v/1000) + 'k'; return 'R$ ' + Math.round(v); }
+
+  function renderChart(baseHist, adjHist){
+    var maxM = 240;
+    var maxV = Math.max(baseHist[maxM].total, adjHist[maxM].total);
+    var pad = { l:48, r:16, t:14, b:26 };
+    var W=640, H=260;
+    var plotW = W-pad.l-pad.r, plotH = H-pad.t-pad.b;
+    function x(m){ return pad.l + (m/maxM)*plotW; }
+    function y(v){ return pad.t + (1 - (maxV>0?v/maxV:0))*plotH; }
+
+    var svg='';
+    for (var g=0; g<=4; g++){
+      var val = maxV*g/4, yy=y(val);
+      svg += '<line class="grid-line" x1="'+pad.l+'" x2="'+(W-pad.r)+'" y1="'+yy+'" y2="'+yy+'"></line>';
+      svg += '<text x="4" y="'+(yy+3)+'">'+fmtShort(val)+'</text>';
+    }
+    svg += '<line class="axis-line" x1="'+pad.l+'" x2="'+(W-pad.r)+'" y1="'+(H-pad.b)+'" y2="'+(H-pad.b)+'"></line>';
+    [0,60,120,180,240].forEach(function(mm){
+      svg += '<text x="'+(x(mm)-14)+'" y="'+(H-6)+'">'+(mm/12)+'a</text>';
+    });
+
+    [ {h:baseHist, color:'var(--moss)'}, {h:adjHist, color:'var(--gold)'} ].forEach(function(s){
+      var d = s.h.filter(function(p,idx){ return idx % 3 === 0 || idx === s.h.length-1; }).map(function(p,i2){ return (i2===0?'M':'L') + x(p.m).toFixed(1) + ' ' + y(p.total).toFixed(1); }).join(' ');
+      svg += '<path class="method-line" d="'+d+'" style="stroke:'+s.color+'"></path>';
+    });
+
+    document.getElementById('chart').innerHTML = svg;
+  }
+
+  function update(){
+    var poupanca = parseNum(els.poupanca.value);
+    var patrimonio = parseNum(els.patrimonio.value);
+    var crescAporte = parseNum(els.crescAporte.value)/100;
+    var retornoBruto = parseNum(els.retorno.value)/100;
+    var custo = parseNum(els.custo.value)/100;
+    var retiradaSegura = parseNum(els.retiradaSegura.value)/100;
+    var ajuste = parseNum(els.ajuste.value);
+
+    var retornoLiquido = retornoBruto - custo;
+
+    var base = simulate(patrimonio, poupanca, retornoLiquido, crescAporte, 240);
+    var adj = simulate(patrimonio, poupanca+ajuste, retornoLiquido, crescAporte, 240);
+    var zeroCusto = simulate(patrimonio, poupanca, retornoBruto, crescAporte, 240);
+
+    document.getElementById('legend').innerHTML =
+      '<span class="legend-item"><span class="legend-dot" style="background:var(--moss)"></span>Trajetória atual</span>' +
+      '<span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>Com o ajuste (+' + BRL.format(ajuste) + '/mês)</span>';
+
+    renderChart(base, adj);
+
+    var yearsEl = document.getElementById('years');
+    var marks = [ {y:5,m:60}, {y:10,m:120}, {y:20,m:240} ];
+    yearsEl.innerHTML = marks.map(function(mk){
+      var b = base[mk.m].total, a = adj[mk.m].total;
+      var delta = a - b;
+      var passiveMonthly = b * retiradaSegura / 12;
+      return '<div class="ycard">' +
+        '<div class="ycard-year">' + mk.y + ' anos</div>' +
+        '<div class="ycard-row"><span class="ycard-label">trajetória atual</span><span class="ycard-val mono" style="color:var(--moss)">' + BRL.format(b) + '</span></div>' +
+        '<div class="ycard-row"><span class="ycard-label">com o ajuste</span><span class="ycard-val mono" style="color:var(--gold)">' + BRL.format(a) + '</span></div>' +
+        '<div class="ycard-delta">+' + BRL.format(delta) + ' de diferença</div>' +
+        '<div class="ycard-passive">renda passiva potencial hoje: <b class="mono">' + BRL.format(passiveMonthly) + '</b>/mês</div>' +
+      '</div>';
+    }).join('');
+
+    var custoTotal = zeroCusto[240].total - base[240].total;
+    document.getElementById('costCallout').innerHTML = '<b>Impacto do custo:</b> só a taxa de administração de ' + (custo*100).toFixed(1) + '% a.a. consome ' + BRL.format(custoTotal) + ' em 20 anos, comparado a um fundo de custo zero com o mesmo retorno bruto.';
+  }
+
+  ids.forEach(function(id){ els[id].addEventListener('input', update); });
+  update();
+})();
+</script>

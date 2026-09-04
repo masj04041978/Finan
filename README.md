@@ -17,6 +17,8 @@ Um sistema de organização financeira pessoal baseado em automação e psicolog
 - [`calculadora/revisao-mensal.html`](calculadora/revisao-mensal.html) — formulário interativo do ritual: calcula patrimônio líquido e taxa de poupança, guarda o histórico mês a mês no seu navegador e mostra a tendência.
 - [`docs/automacao-financeira-total.md`](docs/automacao-financeira-total.md) — a mecânica de execução do sistema: o calendário de transferências automáticas, o protocolo para decisões emocionais e o checklist de implementação no banco.
 - [`calculadora/automacao.html`](calculadora/automacao.html) — calculadora interativa: informe renda, dia do pagamento, despesas fixas e metas, e veja o calendário do mês com cada transferência automática no dia certo.
+- [`docs/simulador-futuro-financeiro.md`](docs/simulador-futuro-financeiro.md) — projeção de patrimônio em 5, 10 e 20 anos, os riscos que a simulação simples esconde (custo, sequência de retornos, inflação de estilo de vida) e os ajustes de maior impacto.
+- [`calculadora/simulador-futuro.html`](calculadora/simulador-futuro.html) — calculadora interativa: informe poupança mensal, patrimônio atual e retorno esperado, e compare a trajetória atual com um ajuste simulado ao longo de 20 anos.
 
 ## A ideia em uma frase
 
