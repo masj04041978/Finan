@@ -126,6 +126,14 @@
   .tip-title{ font-size:12.5px; font-weight:600; margin-bottom:3px; }
   .tip-txt{ font-size:11.5px; color:var(--ink-soft); line-height:1.5; }
 
+  .finding{ padding:12px 0; border-bottom:1px solid var(--line); display:flex; gap:10px; align-items:flex-start; }
+  .finding:last-child{ border-bottom:none; }
+  .finding-dot{ width:7px; height:7px; border-radius:50%; margin-top:6px; flex-shrink:0; }
+  .finding-title{ font-size:13px; font-weight:600; margin-bottom:3px; }
+  .finding-txt{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+  .finding-ok{ font-size:12.5px; color:var(--ink-soft); font-style:italic; }
+  .plan-jump{ font-size:11px; color:var(--sky); background:none; border:none; cursor:pointer; padding:0; margin-top:7px; text-decoration:underline; text-underline-offset:2px; display:inline-block; }
+
   .qa-item label{ display:block; font-size:13px; font-weight:500; margin-bottom:7px; line-height:1.45; }
   textarea, input[type="text"].line{ width:100%; font-family:"Work Sans",sans-serif; font-size:13px; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:3px; padding:9px 11px; resize:vertical; outline:none; }
   textarea:focus, input.line:focus{ border-color:var(--focus); }
@@ -189,6 +197,7 @@
       <button class="tab-btn" data-tab="revisao"><span class="tn mono">05</span>Revisão mensal</button>
       <button class="tab-btn" data-tab="automacao"><span class="tn mono">06</span>Automação</button>
       <button class="tab-btn" data-tab="simulador"><span class="tn mono">07</span>Futuro</button>
+      <button class="tab-btn" data-tab="cfo"><span class="tn mono">08</span>CFO pessoal</button>
     </nav>
     <div class="sidebar-foot">Tudo salvo apenas no seu navegador (local, privado). Nenhum dado sai daqui.</div>
   </aside>
@@ -529,6 +538,42 @@
       <footer class="note">Riscos que a projeção simples esconde em <span class="mono">docs/simulador-futuro-financeiro.md</span>.</footer>
     </section>
 
+    <!-- ============ 08 CFO PESSOAL ============ -->
+    <section class="panel" id="panel-cfo">
+      <div class="panel-head">
+        <div class="eyebrow" style="color:var(--rose)"><span style="background:var(--rose)"></span>08 · CFO pessoal</div>
+        <h1>O que está custando dinheiro agora — e o plano de 3 passos para consertar.</h1>
+        <p class="lede">Nenhum dado novo: isto lê o perfil e os outros 6 módulos e sintetiza vazamentos, oportunidades perdidas, erros e um plano simples e ordenado.</p>
+      </div>
+
+      <section class="block">
+        <div class="block-head"><h2>Raio-x</h2></div>
+        <div class="field-grid cols4" id="cfoRaioX"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Vazamentos de dinheiro</h2></div>
+        <div class="card" id="cfoVazamentos"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Oportunidades perdidas</h2></div>
+        <div class="card" id="cfoOportunidades"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Erros financeiros</h2></div>
+        <div class="card" id="cfoErros"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Seu plano mais simples, nesta ordem</h2></div>
+        <ol class="steps" id="cfoPlano"></ol>
+      </section>
+
+      <footer class="note">Diagnóstico recalculado toda vez que você abre esta aba, a partir dos dados já preenchidos nos outros módulos — nada é enviado a lugar nenhum, tudo roda no seu navegador.</footer>
+    </section>
+
   </main>
 </div>
 
@@ -589,6 +634,7 @@
     document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
     document.getElementById('panel-' + name).classList.add('active');
     document.querySelector('.tab-btn[data-tab="' + name + '"]').classList.add('active');
+    if (name === 'cfo') updateCfo();
   }
   activateTab('perfil');
 
@@ -1193,6 +1239,100 @@
     document.getElementById('sfCostCallout').innerHTML = '<b style="color:var(--rose);">Impacto do custo:</b> '+(custo*100).toFixed(1)+'% a.a. de taxa consome '+BRL.format(custoTotal)+' em 20 anos vs. um fundo de custo zero.';
   }
 
+  /* ================= 08 CFO PESSOAL ================= */
+  function jumpBtn(tab, label){
+    return '<button class="plan-jump" data-jump="'+tab+'">'+(label||'ir para o módulo →')+'</button>';
+  }
+  document.getElementById('panel-cfo').addEventListener('click', function(e){
+    var btn = e.target.closest('[data-jump]'); if (!btn) return;
+    activateTab(btn.dataset.jump);
+  });
+
+  function diagnosticar(){
+    var renda = S.perfil.renda, despesas = S.perfil.despesas;
+    var cap = capacidade();
+    var taxaPoupanca = renda>0 ? (cap/renda)*100 : 0;
+
+    var baseMeses = S.perfil.risco==='conservador'?6:(S.perfil.risco==='agressivo'?12:9);
+    var meses = baseMeses + (S.perfil.autonomo?3:0) + (S.perfil.dependentes?2:0);
+    var alvoReserva = meses*despesas;
+    var colchaoInicial = Math.max(despesas, 1000);
+    var reservaPct = alvoReserva>0 ? Math.min(999,(S.perfil.poupancaLiquida/alvoReserva)*100) : 100;
+    var sobrandoAlemReserva = Math.max(0, S.perfil.poupancaLiquida - alvoReserva*1.2);
+
+    var debts = S.dividas.debts || [];
+    var dividasCaras = debts.filter(function(d){ return d.taxa > 8 && d.saldo>0; });
+    var saldoCaro = dividasCaras.reduce(function(s,d){ return s+d.saldo; }, 0);
+    var jurosMensalCaro = dividasCaras.reduce(function(s,d){ return s + d.saldo*(d.taxa/100); }, 0);
+
+    var pctInvestConfigurado = S.automacao.pctInvest != null && S.automacao.pctInvest > 0;
+    var temMeta = S.automacao.meta && S.automacao.meta.valor > 0;
+    var custoAlto = S.simulador.custo > 1.5;
+    var custo20anos = 0;
+    if (custoAlto && S.perfil.patrimonio + (S.simulador.poupanca||cap) > 0){
+      var poup = S.simulador.poupanca != null ? S.simulador.poupanca : cap;
+      var i1 = Math.pow(1+S.simulador.retorno/100, 1/12)-1;
+      var i2 = Math.pow(1+(S.simulador.retorno-S.simulador.custo)/100, 1/12)-1;
+      var p1=S.perfil.patrimonio, p2=S.perfil.patrimonio, c1=poup, c2=poup;
+      for (var m=1;m<=240;m++){ p1=p1*(1+i1)+c1; p2=p2*(1+i2)+c2; if (m%12===0){ c1*=1.03; c2*=1.03; } }
+      custo20anos = p1-p2;
+    }
+
+    return { renda:renda, despesas:despesas, cap:cap, taxaPoupanca:taxaPoupanca, alvoReserva:alvoReserva, colchaoInicial:colchaoInicial,
+      reservaPct:reservaPct, sobrandoAlemReserva:sobrandoAlemReserva, saldoCaro:saldoCaro, jurosMensalCaro:jurosMensalCaro,
+      dividasCaras:dividasCaras, pctInvestConfigurado:pctInvestConfigurado, temMeta:temMeta, custoAlto:custoAlto, custo20anos:custo20anos };
+  }
+
+  function updateCfo(){
+    var d = diagnosticar();
+
+    document.getElementById('cfoRaioX').innerHTML = [
+      { label:'taxa de poupança', val: d.taxaPoupanca.toFixed(1)+'%', color: d.taxaPoupanca>=10?'var(--moss)':'var(--rose)' },
+      { label:'reserva completa', val: Math.round(d.reservaPct)+'%', color: d.reservaPct>=100?'var(--moss)':'var(--sky)' },
+      { label:'juros/mês em dívida cara', val: BRL.format(d.jurosMensalCaro), color: d.jurosMensalCaro>0?'var(--rose)':'var(--moss)' },
+      { label:'custo dos fundos', val: (S.simulador.custo).toFixed(1)+'% a.a.', color: d.custoAlto?'var(--rose)':'var(--moss)' }
+    ].map(function(s){
+      return '<div class="stat-card"><div class="sc-sub">'+s.label+'</div><div class="sc-amt mono" style="color:'+s.color+'">'+s.val+'</div></div>';
+    }).join('');
+
+    var vaz = [];
+    if (d.jurosMensalCaro > 0) vaz.push({ t:'Juros de dívida cara', x:'Você paga cerca de ' + BRL.format(d.jurosMensalCaro) + '/mês só em juros nas dívidas acima de 8% a.m. (' + d.dividasCaras.map(function(x){return x.nome;}).join(', ') + ').', jump:'dividas' });
+    if (d.cap>0 && d.taxaPoupanca < 10) vaz.push({ t:'Taxa de poupança abaixo do saudável', x:'Sua taxa de poupança está em ' + d.taxaPoupanca.toFixed(1) + '%, abaixo do mínimo de referência de 10%.', jump:'orcamento' });
+    if (d.custoAlto) vaz.push({ t:'Custo de fundos alto', x:S.simulador.custo.toFixed(1) + '% a.a. de taxa de administração consome ' + BRL.format(d.custo20anos) + ' em 20 anos comparado a um fundo de baixo custo.', jump:'simulador' });
+    document.getElementById('cfoVazamentos').innerHTML = vaz.length ? vaz.map(function(v){
+      return '<div class="finding"><span class="finding-dot" style="background:var(--rose)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
+    }).join('') : '<div class="finding-ok">Nenhum vazamento óbvio identificado nos dados atuais.</div>';
+
+    var opp = [];
+    if (d.sobrandoAlemReserva > 500) opp.push({ t:'Dinheiro parado além da reserva', x: BRL.format(d.sobrandoAlemReserva) + ' na poupança líquida além do que a reserva de emergência precisa — poderia estar investido rendendo mais.', jump:'liberdade' });
+    if (!d.temMeta) opp.push({ t:'Nenhuma meta específica', x:'Sem meta com valor e prazo cadastrada em Automação — sem prazo definido, não vira aporte automático dedicado.', jump:'automacao' });
+    if (!d.pctInvestConfigurado) opp.push({ t:'Pague-se primeiro não automatizado', x:'O percentual de investimento automático não está configurado em Automação — cada mês depende de decisão manual.', jump:'automacao' });
+    document.getElementById('cfoOportunidades').innerHTML = opp.length ? opp.map(function(v){
+      return '<div class="finding"><span class="finding-dot" style="background:var(--gold)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
+    }).join('') : '<div class="finding-ok">Nenhuma oportunidade óbvia ficando parada.</div>';
+
+    var err = [];
+    if (d.cap<=0) err.push({ t:'Despesas maiores ou iguais à renda', x:'Não há capacidade de poupança neste momento — nenhum outro passo funciona até isso mudar.', jump:'orcamento' });
+    if (d.saldoCaro>0 && S.perfil.patrimonio>0) err.push({ t:'Investindo com dívida cara em aberto', x:'Você tem ' + BRL.format(d.saldoCaro) + ' em dívida acima de 8% a.m. e também tem investimentos — o juro da dívida quase certamente supera o retorno do investimento.', jump:'dividas' });
+    if (d.reservaPct<20 && d.saldoCaro===0 && d.pctInvestConfigurado) err.push({ t:'Investindo agressivamente sem reserva', x:'A reserva de emergência está em ' + Math.round(d.reservaPct) + '% — um imprevisto pode forçar venda de investimento ou nova dívida.', jump:'liberdade' });
+    document.getElementById('cfoErros').innerHTML = err.length ? err.map(function(v){
+      return '<div class="finding"><span class="finding-dot" style="background:var(--rose)"></span><div><div class="finding-title">'+v.t+'</div><div class="finding-txt">'+v.x+'</div>'+jumpBtn(v.jump)+'</div></div>';
+    }).join('') : '<div class="finding-ok">Nenhum erro estrutural óbvio identificado.</div>';
+
+    var plano = [];
+    if (d.cap<=0) plano.push({ t:'Corte despesas antes de qualquer outra coisa', x:'Sem capacidade de poupança, nenhum dos outros passos tem com o que trabalhar.', jump:'orcamento' });
+    if (d.saldoCaro > d.colchaoInicial*0.5) plano.push({ t:'Quite as dívidas de juros altos', x:'Nenhum investimento seguro paga o que essas dívidas cobram — priorize ' + d.dividasCaras.map(function(x){return x.nome;}).join(', ') + '.', jump:'dividas' });
+    if (d.reservaPct < 100) plano.push({ t:'Complete a reserva de emergência', x:'Está em ' + Math.round(d.reservaPct) + '% de ' + BRL.format(d.alvoReserva) + ' — prioridade antes de investir mais agressivamente.', jump:'liberdade' });
+    if (!d.pctInvestConfigurado) plano.push({ t:'Automatize o pague-se primeiro', x:'Configure a transferência automática de investimento no dia do pagamento.', jump:'automacao' });
+    if (!d.temMeta) plano.push({ t:'Defina uma meta específica com prazo', x:'Um valor e uma data transformam poupança genérica em aporte dedicado.', jump:'automacao' });
+    if (d.custoAlto) plano.push({ t:'Reduza o custo dos seus fundos', x:BRL.format(d.custo20anos) + ' em 20 anos é o preço de manter um fundo caro — troque por um de índice de baixo custo equivalente.', jump:'simulador' });
+    if (!plano.length) plano.push({ t:'Sua base está sólida', x:'Continue o ritual mensal de revisão e direcione todo aumento de renda primeiro para a taxa de poupança.', jump:'revisao' });
+
+    document.getElementById('cfoPlano').innerHTML = plano.slice(0,3).map(function(p, i){
+      return '<li><span class="step-n mono">'+(i+1).toString().padStart(2,'0')+'</span><span class="step-txt"><b>'+p.t+'</b><br>'+p.x+'<br>'+jumpBtn(p.jump)+'</span></li>';
+    }).join('');
+  }
+
   /* load module-specific text/select inputs from state */
   document.getElementById('divExtra').value = S.dividas.extra != null ? fmtInput(S.dividas.extra) : fmtInput(capacidade());
   document.getElementById('pfHorizonte').value = S.portfolio.horizonte;
@@ -1213,6 +1353,7 @@
     updateRevisao();
     updateAutomacao();
     updateSimulador();
+    updateCfo();
   }
   updateAll();
 })();
