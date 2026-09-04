@@ -222,18 +222,19 @@
       <div class="panel-head">
         <div class="eyebrow" style="color:var(--ink-soft)"><span style="background:var(--ink-soft)"></span>Seu perfil</div>
         <h1>Preencha uma vez — os 7 módulos já abrem calculados.</h1>
-        <p class="lede">Renda do casal (somada automaticamente), despesas, idade e perfil de risco alimentam todos os módulos abaixo. Cada módulo ainda pode ter campos próprios (dívidas, metas, país) que não fazem sentido compartilhar.</p>
+        <p class="lede">Renda do casal (Marco + Rafaela, somada automaticamente), despesas, idade de cada um e perfil de risco alimentam todos os módulos abaixo. Cada módulo ainda pode ter campos próprios (dívidas, metas, país) que não fazem sentido compartilhar.</p>
       </div>
 
       <section class="block">
         <div class="card">
           <div class="field-grid">
-            <div class="field"><label for="p_rendaEu">Minha renda</label><div class="input-shell"><span>R$</span><input type="text" id="p_rendaEu" inputmode="decimal"></div></div>
-            <div class="field"><label for="p_rendaConjuge">Renda da esposa</label><div class="input-shell"><span>R$</span><input type="text" id="p_rendaConjuge" inputmode="decimal"></div></div>
+            <div class="field"><label for="p_rendaEu">Marco</label><div class="input-shell"><span>R$</span><input type="text" id="p_rendaEu" inputmode="decimal"></div></div>
+            <div class="field"><label for="p_rendaConjuge">Rafaela</label><div class="input-shell"><span>R$</span><input type="text" id="p_rendaConjuge" inputmode="decimal"></div></div>
             <div class="field"><label for="p_despesas">Despesas mensais totais</label><div class="input-shell"><span>R$</span><input type="text" id="p_despesas" inputmode="decimal"></div></div>
             <div class="field"><label for="p_patrimonio">Investimentos atuais</label><div class="input-shell"><span>R$</span><input type="text" id="p_patrimonio" inputmode="decimal"></div></div>
             <div class="field"><label for="p_poupancaLiquida">Poupança líquida atual (conta/reserva)</label><div class="input-shell"><span>R$</span><input type="text" id="p_poupancaLiquida" inputmode="decimal"></div></div>
-            <div class="field"><label for="p_idade">Idade</label><div class="input-shell"><input type="text" id="p_idade" inputmode="numeric"><span>anos</span></div></div>
+            <div class="field"><label for="p_idadeEu">Idade — Marco</label><div class="input-shell"><input type="text" id="p_idadeEu" inputmode="numeric"><span>anos</span></div></div>
+            <div class="field"><label for="p_idadeConjuge">Idade — Rafaela</label><div class="input-shell"><input type="text" id="p_idadeConjuge" inputmode="numeric"><span>anos</span></div></div>
             <div class="field"><label for="p_diaPagamento">Dia do pagamento</label><div class="input-shell"><input type="text" id="p_diaPagamento" inputmode="numeric"><span>do mês</span></div></div>
             <div class="field"><label for="p_risco">Perfil de risco</label><select class="sel" id="p_risco">
               <option value="conservador">Conservador</option>
@@ -251,7 +252,7 @@
             <label class="toggle"><input type="checkbox" id="p_dependentes"> Tenho dependentes financeiros</label>
           </div>
           <div class="stat-row" style="margin-top:18px;">
-            <span class="stat-label">renda familiar total (minha + esposa)</span>
+            <span class="stat-label">renda familiar total (Marco + Rafaela)</span>
             <span class="mono" id="p_rendaTotal" style="font-weight:600;color:var(--moss);"></span>
           </div>
           <div class="stat-row">
@@ -733,7 +734,7 @@
   function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
 
   var DEFAULT_STATE = {
-    perfil: { rendaEu:4500, rendaConjuge:3500, despesas:5500, patrimonio:15000, poupancaLiquida:4000, idade:32, diaPagamento:5, risco:'moderado', pais:'BR', autonomo:false, dependentes:true },
+    perfil: { rendaEu:4500, rendaConjuge:3500, despesas:5500, patrimonio:15000, poupancaLiquida:4000, idadeEu:48, idadeConjuge:42, diaPagamento:5, risco:'moderado', pais:'BR', autonomo:false, dependentes:true },
     orcamento: { pcts:{ fixos:50, pague:15, familia:10, semCulpa:25 } },
     dividas: { debts:[
         { id:1, nome:'Cartão de crédito', saldo:4200, taxa:14, min:300 },
@@ -800,6 +801,7 @@
 
   function rendaTotal(){ return S.perfil.rendaEu + S.perfil.rendaConjuge; }
   function capacidade(){ return rendaTotal() - S.perfil.despesas; }
+  function idadeMedia(){ return (S.perfil.idadeEu + S.perfil.idadeConjuge) / 2; }
 
   function calcReserva(){
     var despesas = S.perfil.despesas, poupanca = S.perfil.poupancaLiquida;
@@ -837,7 +839,7 @@
   var pEls = {
     rendaEu: document.getElementById('p_rendaEu'), rendaConjuge: document.getElementById('p_rendaConjuge'), despesas: document.getElementById('p_despesas'),
     patrimonio: document.getElementById('p_patrimonio'), poupancaLiquida: document.getElementById('p_poupancaLiquida'),
-    idade: document.getElementById('p_idade'), diaPagamento: document.getElementById('p_diaPagamento'),
+    idadeEu: document.getElementById('p_idadeEu'), idadeConjuge: document.getElementById('p_idadeConjuge'), diaPagamento: document.getElementById('p_diaPagamento'),
     risco: document.getElementById('p_risco'), pais: document.getElementById('p_pais'),
     autonomo: document.getElementById('p_autonomo'), dependentes: document.getElementById('p_dependentes')
   };
@@ -847,7 +849,8 @@
     pEls.despesas.value = fmtInput(S.perfil.despesas);
     pEls.patrimonio.value = fmtInput(S.perfil.patrimonio);
     pEls.poupancaLiquida.value = fmtInput(S.perfil.poupancaLiquida);
-    pEls.idade.value = S.perfil.idade;
+    pEls.idadeEu.value = S.perfil.idadeEu;
+    pEls.idadeConjuge.value = S.perfil.idadeConjuge;
     pEls.diaPagamento.value = S.perfil.diaPagamento;
     pEls.risco.value = S.perfil.risco;
     pEls.pais.value = S.perfil.pais;
@@ -860,7 +863,8 @@
     S.perfil.despesas = parseNum(pEls.despesas.value);
     S.perfil.patrimonio = parseNum(pEls.patrimonio.value);
     S.perfil.poupancaLiquida = parseNum(pEls.poupancaLiquida.value);
-    S.perfil.idade = clamp(parseNum(pEls.idade.value), 0, 100);
+    S.perfil.idadeEu = clamp(parseNum(pEls.idadeEu.value), 0, 100);
+    S.perfil.idadeConjuge = clamp(parseNum(pEls.idadeConjuge.value), 0, 100);
     S.perfil.diaPagamento = clamp(parseNum(pEls.diaPagamento.value) || 1, 1, 31);
     S.perfil.risco = pEls.risco.value;
     S.perfil.pais = pEls.pais.value;
@@ -1128,7 +1132,7 @@
   pfValorEl.addEventListener('input', function(){ S.portfolio.aporte = parseNum(pfValorEl.value); saveState(); updatePortfolio(); });
 
   function updatePortfolio(){
-    var idade = S.perfil.idade, horizonte = S.portfolio.horizonte;
+    var idade = idadeMedia(), horizonte = S.portfolio.horizonte;
     var valor = S.portfolio.aporte != null ? S.portfolio.aporte : capacidade();
     if (document.activeElement !== pfValorEl) pfValorEl.value = fmtInput(valor);
     if (document.activeElement !== pfHorizonteEl) pfHorizonteEl.value = horizonte;
