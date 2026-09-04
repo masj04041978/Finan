@@ -202,6 +202,7 @@
       <button class="tab-btn" data-tab="simulador"><span class="tn mono">07</span>Futuro</button>
       <button class="tab-btn" data-tab="cfo"><span class="tn mono">08</span>CFO pessoal</button>
       <button class="tab-btn" data-tab="redesenho"><span class="tn mono">09</span>Redesenho</button>
+      <button class="tab-btn" data-tab="historico"><span class="tn mono">10</span>Histórico</button>
     </nav>
     <div class="sidebar-foot">Tudo salvo apenas no seu navegador (local, privado). Nenhum dado sai daqui.</div>
   </aside>
@@ -622,6 +623,49 @@
       <footer class="note">Regra de corte: entre itens marcados "assinatura", só a de maior valor é mantida — as demais são sinalizadas como corte. Os alvos de cada balde vêm dos percentuais definidos no módulo 01 · Orçamento flexível.</footer>
     </section>
 
+    <!-- ============ 10 HISTÓRICO ============ -->
+    <section class="panel" id="panel-historico">
+      <div class="panel-head">
+        <div class="eyebrow" style="color:var(--sky)"><span style="background:var(--sky)"></span>10 · Histórico de gastos</div>
+        <h1>O padrão só aparece quando você olha vários meses juntos.</h1>
+        <p class="lede">Lance suas transações (não o total do mês) e o app procura assinatura, vazamento escondido, compra por impulso e aumento de padrão de vida — comparando datas e valores, não uma foto isolada.</p>
+      </div>
+
+      <section class="block">
+        <div class="block-head"><h2>Suas transações</h2><span class="block-note">exemplo de 3 meses — edite ou apague e cole as suas</span></div>
+        <div class="elist">
+          <div class="elist-grid" style="grid-template-columns:0.9fr 1.4fr 1.1fr 0.7fr 26px;">
+            <div class="elist-head" style="display:contents;">
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Data</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Descrição</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Categoria</div>
+              <div style="font-size:10.5px;text-transform:uppercase;color:var(--ink-soft);padding:8px 12px;border-bottom:1px solid var(--line);">Valor</div>
+              <div></div>
+            </div>
+            <div id="htRows" style="display:contents;"></div>
+          </div>
+          <div class="elist-foot"><button class="add-btn" id="htAdd">+ adicionar transação</button></div>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Padrões encontrados</h2></div>
+        <div class="card" id="htPadroes"></div>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Maior economia, menor impacto no seu estilo de vida</h2></div>
+        <ol class="steps" id="htRanking"></ol>
+      </section>
+
+      <section class="block">
+        <div class="block-head"><h2>Resumo</h2></div>
+        <div class="cards2" id="htResumo"></div>
+      </section>
+
+      <footer class="note">Detecção: descrições idênticas que se repetem a cada ~20-45 dias viram "recorrente"; entre elas, valor médio até R$ 15 vira vazamento, valor final 15%+ acima do inicial vira aumento de padrão, o resto vira assinatura. Ocorrência única acima de R$ 150 em categoria discricionária vira compra por impulso. Só categorias discricionárias e Financeiro entram nessa análise — fixos essenciais (moradia, contas, alimentação etc.) ficam de fora.</footer>
+    </section>
+
   </main>
 </div>
 
@@ -670,6 +714,26 @@
         { id:13, nome:'Compras/extras',               categoria:'Extras',               valor:350,  automatizado:false, assinatura:false },
         { id:14, nome:'Academia',                     categoria:'Pessoal',              valor:130,  automatizado:true,  assinatura:false },
         { id:15, nome:'Presente/apoio à família',      categoria:'Família/filhos',       valor:150,  automatizado:false, assinatura:false }
+      ] },
+    historico: { uid:19, txs:[
+        { id:1,  data:'2026-06-03', descricao:'Aluguel',               categoria:'Moradia',              valor:1800 },
+        { id:2,  data:'2026-06-05', descricao:'Supermercado',          categoria:'Alimentação',           valor:620 },
+        { id:3,  data:'2026-06-07', descricao:'Spotify',               categoria:'Lazer',                 valor:21.90 },
+        { id:4,  data:'2026-06-10', descricao:'App Premium Fitness',   categoria:'Extras',                valor:9.90 },
+        { id:5,  data:'2026-06-12', descricao:'Tarifa bancária',       categoria:'Financeiro',            valor:12.90 },
+        { id:6,  data:'2026-06-15', descricao:'iFood',                 categoria:'Restaurante e delivery', valor:180 },
+        { id:7,  data:'2026-06-20', descricao:'Loja de eletrônicos',   categoria:'Extras',                valor:890 },
+        { id:8,  data:'2026-07-04', descricao:'Supermercado',          categoria:'Alimentação',           valor:640 },
+        { id:9,  data:'2026-07-06', descricao:'Spotify',               categoria:'Lazer',                 valor:21.90 },
+        { id:10, data:'2026-07-09', descricao:'App Premium Fitness',   categoria:'Extras',                valor:9.90 },
+        { id:11, data:'2026-07-11', descricao:'Tarifa bancária',       categoria:'Financeiro',            valor:12.90 },
+        { id:12, data:'2026-07-14', descricao:'iFood',                 categoria:'Restaurante e delivery', valor:310 },
+        { id:13, data:'2026-07-22', descricao:'Loja de roupas',        categoria:'Pessoal',               valor:420 },
+        { id:14, data:'2026-08-05', descricao:'Supermercado',          categoria:'Alimentação',           valor:655 },
+        { id:15, data:'2026-08-06', descricao:'Spotify',               categoria:'Lazer',                 valor:21.90 },
+        { id:16, data:'2026-08-09', descricao:'App Premium Fitness',   categoria:'Extras',                valor:9.90 },
+        { id:17, data:'2026-08-11', descricao:'Tarifa bancária',       categoria:'Financeiro',            valor:12.90 },
+        { id:18, data:'2026-08-13', descricao:'iFood',                 categoria:'Restaurante e delivery', valor:420 }
       ] }
   };
 
@@ -701,6 +765,7 @@
     document.querySelector('.tab-btn[data-tab="' + name + '"]').classList.add('active');
     if (name === 'cfo') updateCfo();
     if (name === 'redesenho') updateRedesenho();
+    if (name === 'historico') updateHistorico();
   }
   activateTab('perfil');
 
@@ -1522,6 +1587,148 @@
       '</div>';
   }
 
+  /* ================= 10 HISTÓRICO ================= */
+  var ESCOPO_HISTORICO = ['Restaurante e delivery','Lazer','Pessoal','Extras','Financeiro'];
+  var htRowsEl = document.getElementById('htRows');
+
+  function renderHtRows(){
+    htRowsEl.innerHTML = '';
+    S.historico.txs.forEach(function(t){
+      var row = document.createElement('div');
+      row.style.display = 'contents';
+      var options = CATEGORIAS_ALL.map(function(c){ return '<option value="'+c+'"'+(c===t.categoria?' selected':'')+'>'+c+'</option>'; }).join('');
+      row.innerHTML =
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input type="date" data-f="data" data-id="'+t.id+'" value="'+t.data+'" style="font-family:IBM Plex Mono,monospace;font-size:12.5px;border:none;background:transparent;color:var(--ink);width:100%;outline:none;"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="descricao" data-id="'+t.id+'" value="'+t.descricao+'"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><select class="rd-sel" data-f="categoria" data-id="'+t.id+'">'+options+'</select></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);"><input data-f="valor" data-id="'+t.id+'" inputmode="decimal" value="'+t.valor.toLocaleString('pt-BR')+'"></div>' +
+        '<div style="padding:6px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;"><button class="rm-btn" data-rm="'+t.id+'">×</button></div>';
+      htRowsEl.appendChild(row);
+    });
+  }
+  function htFieldChanged(e){
+    var id = e.target.dataset.id; if (!id) return;
+    var t = S.historico.txs.filter(function(x){ return x.id == id; })[0]; if (!t) return;
+    var f = e.target.dataset.f;
+    if (f==='data') t.data = e.target.value;
+    else if (f==='descricao') t.descricao = e.target.value;
+    else if (f==='categoria') t.categoria = e.target.value;
+    else if (f==='valor') t.valor = parseNum(e.target.value);
+    else return;
+    saveState(); updateHistorico();
+  }
+  htRowsEl.addEventListener('input', htFieldChanged);
+  htRowsEl.addEventListener('change', htFieldChanged);
+  htRowsEl.addEventListener('click', function(e){
+    var id = e.target.dataset.rm; if (!id) return;
+    S.historico.txs = S.historico.txs.filter(function(x){ return x.id != id; });
+    renderHtRows(); saveState(); updateHistorico();
+  });
+  document.getElementById('htAdd').addEventListener('click', function(){
+    var today = new Date().toISOString().slice(0,10);
+    S.historico.txs.push({ id: S.historico.uid++, data:today, descricao:'Nova transação', categoria:CATEGORIAS_ALL[0], valor:50 });
+    renderHtRows(); saveState(); updateHistorico();
+  });
+  renderHtRows();
+
+  function analisarHistorico(){
+    var txs = S.historico.txs;
+    var groups = {};
+    txs.forEach(function(t){
+      var key = t.descricao.trim().toLowerCase();
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(t);
+    });
+
+    var findings = [];
+    Object.keys(groups).forEach(function(key){
+      var list = groups[key].slice().sort(function(a,b){ return new Date(a.data) - new Date(b.data); });
+      var first = list[0];
+      if (ESCOPO_HISTORICO.indexOf(first.categoria) === -1) return;
+
+      if (list.length === 1){
+        if (first.valor > 150){
+          findings.push({ tipo:'impulso', desc:first.descricao, categoria:first.categoria, valor:first.valor, ocorrencias:1 });
+        }
+        return;
+      }
+
+      var intervals = [];
+      for (var i=1;i<list.length;i++){
+        intervals.push((new Date(list[i].data) - new Date(list[i-1].data)) / 86400000);
+      }
+      var avgInterval = intervals.reduce(function(s,d){ return s+d; }, 0) / intervals.length;
+      var avgValor = list.reduce(function(s,t){ return s+t.valor; }, 0) / list.length;
+      var isMonthly = avgInterval >= 20 && avgInterval <= 45;
+      if (!isMonthly) return;
+
+      var last = list[list.length-1];
+      var trendUp = last.valor > first.valor * 1.15;
+
+      if (trendUp){
+        var annualDelta = (last.valor - first.valor) * (365/avgInterval);
+        findings.push({ tipo:'aumento', desc:first.descricao, categoria:first.categoria, valorInicial:first.valor, valorFinal:last.valor, annualCost:annualDelta, ocorrencias:list.length });
+      } else if (avgValor <= 15){
+        findings.push({ tipo:'vazamento', desc:first.descricao, categoria:first.categoria, valor:avgValor, annualCost: avgValor*(365/avgInterval), ocorrencias:list.length });
+      } else {
+        findings.push({ tipo:'assinatura', desc:first.descricao, categoria:first.categoria, valor:avgValor, annualCost: avgValor*(365/avgInterval), ocorrencias:list.length });
+      }
+    });
+    return findings;
+  }
+
+  var TIPO_META = {
+    vazamento:  { label:'vazamento',  color:'var(--rose)', bg:'var(--rose-bg)', peso:1,   impacto:'baixíssimo — você nem vai sentir falta' },
+    assinatura: { label:'assinatura', color:'var(--sky)',  bg:'var(--sky-bg)',  peso:2,   impacto:'baixo — fácil de cancelar' },
+    impulso:    { label:'impulso',    color:'color-mix(in srgb, var(--rose) 55%, var(--gold) 45%)', bg:'color-mix(in srgb, var(--rose-bg) 55%, var(--gold-bg) 45%)', peso:2.5, impacto:'pontual — evite repetir o padrão' },
+    aumento:    { label:'aumento de padrão', color:'var(--gold)', bg:'var(--gold-bg)', peso:4, impacto:'médio — exige voltar a um hábito antigo' }
+  };
+
+  function updateHistorico(){
+    var findings = analisarHistorico();
+
+    document.getElementById('htPadroes').innerHTML = findings.length ? findings.map(function(f){
+      var m = TIPO_META[f.tipo];
+      var valorTxt = f.tipo === 'aumento'
+        ? BRL.format(f.valorInicial) + ' → ' + BRL.format(f.valorFinal) + ' (' + f.ocorrencias + 'x)'
+        : (f.tipo === 'impulso' ? BRL.format(f.valor) + ' (ocorrência única)' : BRL.format(f.valor) + '/mês (' + f.ocorrencias + 'x)');
+      return '<div class="finding"><span class="finding-dot" style="background:' + m.color + '"></span><div style="flex:1;">' +
+        '<div class="finding-title">' + f.desc + ' <span class="rd-badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.label + '</span></div>' +
+        '<div class="finding-txt">' + f.categoria + ' · ' + valorTxt + '</div></div></div>';
+    }).join('') : '<div class="finding-ok">Nenhum padrão de assinatura, vazamento, impulso ou aumento identificado nas transações atuais.</div>';
+
+    var ranked = findings.map(function(f){
+      var comparavel = f.tipo === 'impulso' ? f.valor : f.annualCost;
+      var m = TIPO_META[f.tipo];
+      return { f:f, m:m, comparavel:comparavel, score: comparavel / m.peso };
+    }).sort(function(a,b){ return b.score - a.score; });
+
+    document.getElementById('htRanking').innerHTML = ranked.length ? ranked.map(function(r, i){
+      var economiaTxt = r.f.tipo === 'impulso' ? BRL.format(r.comparavel) + ' observado nessa ocorrência' : BRL.format(r.comparavel) + '/ano se eliminado';
+      var acao = r.f.tipo === 'aumento'
+        ? 'Volte ao patamar de ' + BRL.format(r.f.valorInicial) + ' em "' + r.f.desc + '" — a alta silenciosa é o maior ralo aqui.'
+        : (r.f.tipo === 'impulso' ? 'Evite repetir uma compra parecida com "' + r.f.desc + '" por impulso.' : 'Cancele ou revise "' + r.f.desc + '".');
+      return '<li><span class="step-n mono">' + (i+1).toString().padStart(2,'0') + '</span><span class="step-txt"><b>' + r.f.desc + '</b> <span class="rd-badge" style="background:' + r.m.bg + ';color:' + r.m.color + '">' + r.m.label + '</span><br>' + economiaTxt + ' · impacto no estilo de vida: ' + r.m.impacto + '<br>' + acao + '</span></li>';
+    }).join('') : '<li><span class="step-n mono">—</span><span class="step-txt">Sem mudanças a sugerir com os dados atuais.</span></li>';
+
+    var recorrentes = findings.filter(function(f){ return f.tipo !== 'impulso'; });
+    var economiaAnualRecorrente = recorrentes.reduce(function(s,f){ return s + f.annualCost; }, 0);
+    var impulsos = findings.filter(function(f){ return f.tipo === 'impulso'; });
+    var totalImpulso = impulsos.reduce(function(s,f){ return s + f.valor; }, 0);
+    var facil = findings.filter(function(f){ return TIPO_META[f.tipo].peso <= 2; }).length;
+    var exigeMudanca = findings.filter(function(f){ return TIPO_META[f.tipo].peso > 2; }).length;
+
+    document.getElementById('htResumo').innerHTML =
+      '<div class="stat-card"><div class="sc-title" style="color:var(--rose)">Economia anual recorrente identificada</div>' +
+        '<div class="sc-amt mono" style="color:var(--rose)">' + BRL.format(economiaAnualRecorrente) + '</div>' +
+        '<div class="sc-sub">de assinaturas, vazamentos e aumento de padrão somados — ' + facil + ' de baixo impacto, ' + exigeMudanca + ' exigem mudar hábito.</div>' +
+      '</div>' +
+      '<div class="stat-card"><div class="sc-title" style="color:var(--gold)">Compras por impulso no período</div>' +
+        '<div class="sc-amt mono" style="color:var(--gold)">' + BRL.format(totalImpulso) + '</div>' +
+        '<div class="sc-sub">' + impulsos.length + ' ocorrência(s) única(s) — valor observado, não projeção anual.</div>' +
+      '</div>';
+  }
+
   /* load module-specific text/select inputs from state */
   document.getElementById('divExtra').value = S.dividas.extra != null ? fmtInput(S.dividas.extra) : fmtInput(capacidade());
   document.getElementById('pfHorizonte').value = S.portfolio.horizonte;
@@ -1544,6 +1751,7 @@
     updateSimulador();
     updateCfo();
     updateRedesenho();
+    updateHistorico();
   }
   updateAll();
 })();
